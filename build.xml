@@ -954,7 +954,13 @@
                 <if condition="${build.is.instrumented}">
                     <then>
                         <dex-helper nolocals="true">
-                            <path path="${out.dex.input.absolute.dir}"/>
+                            <path>
+                                <fileset dir="${out.dex.input.absolute.dir}" casesensitive="yes">
+                                    <include name="**/*.class"/>
+                                    <exclude name="${dex.file2.includes}"/>
+                                </fileset>
+                            </path>
+                            <!-- <path path="${out.dex.input.absolute.dir}"/> -->
                             <path refid="out.dex.jar.input.ref" />
                             <fileset file="${emma.dir}/emma_device.jar" />
                             <!-- <external-libs>
@@ -964,7 +970,23 @@
                     </then>
                     <else>
                         <dex-helper nolocals="false">
-                            <path path="${out.dex.input.absolute.dir}"/>
+                            <path>
+                                <fileset dir="${out.dex.input.absolute.dir}" casesensitive="yes">
+                                    <include name="**/*.class"/>
+                                    <exclude name="${dex.file2.includes}"/>
+                                </fileset>
+                            </path>
+                            <!-- <path path="${out.dex.input.absolute.dir}"/> -->
+                            <path refid="out.dex.jar.input.ref" />
+                        </dex-helper>
+                        <dex-helper nolocals="false">
+                            <path>
+                                <fileset dir="${out.dex.input.absolute.dir}" casesensitive="yes">
+                                    <!-- <include name="**/*.class"/> -->
+                                    <includes name="${dex.file2.includes}"/>
+                                </fileset>
+                            </path>
+                            <!-- <path path="${out.dex.input.absolute.dir}"/> -->
                             <path refid="out.dex.jar.input.ref" />
                         </dex-helper>
                         <!-- <dex-helper /> -->
