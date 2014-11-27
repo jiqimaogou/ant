@@ -184,7 +184,8 @@
     <property name="out.absolute.dir" location="${out.dir}" />
     <property name="out.classes.absolute.dir" location="${out.dir}/classes" />
     <property name="out.res.absolute.dir" location="${out.dir}/res" />
-    <property name="out.crunch.res.absolute.dir" location="${out.dir}/res/crunch" />
+    <!-- <property name="out.crunch.res.absolute.dir" location="${out.dir}/res/crunch" /> -->
+    <property name="out.crunch.res.absolute.dir" location="${out.dir}/res" />
     <property name="out.rs.obj.absolute.dir" location="${out.dir}/rsObj" />
     <property name="out.rs.libs.absolute.dir" location="${out.dir}/rsLibs" />
     <property name="out.aidl.absolute.dir" location="${out.dir}/aidl" />
@@ -294,7 +295,7 @@
     <!-- Configurable macro, which allows to pass as parameters output directory,
          output dex filename and external libraries to dex (optional) -->
     <macrodef name="dex-helper">
-        <element name="external-libs" optional="yes" />
+        <element name="external-libs" optional="yes" implicit="yes" />
         <attribute name="nolocals" default="false" />
         <sequential>
             <!-- sets the primary input for dex. If a pre-dex task sets it to
@@ -321,8 +322,8 @@
                     forceJumbo="${dex.force.jumbo}"
                     disableDexMerger="${dex.disable.merger}"
                     verbose="${verbose}">
-                <path path="${out.dex.input.absolute.dir}"/>
-                <path refid="out.dex.jar.input.ref" />
+                <!-- <path path="${out.dex.input.absolute.dir}"/> -->
+                <!-- <path refid="out.dex.jar.input.ref" /> -->
                 <external-libs />
             </dex>
         </sequential>
@@ -943,13 +944,20 @@
                 <if condition="${build.is.instrumented}">
                     <then>
                         <dex-helper nolocals="true">
-                            <external-libs>
+                            <path path="${out.dex.input.absolute.dir}"/>
+                            <path refid="out.dex.jar.input.ref" />
+                            <fileset file="${emma.dir}/emma_device.jar" />
+                            <!-- <external-libs>
                                 <fileset file="${emma.dir}/emma_device.jar" />
-                            </external-libs>
+                            </external-libs> -->
                         </dex-helper>
                     </then>
                     <else>
-                        <dex-helper />
+                        <dex-helper nolocals="false">
+                            <path path="${out.dex.input.absolute.dir}"/>
+                            <path refid="out.dex.jar.input.ref" />
+                        </dex-helper>
+                        <!-- <dex-helper /> -->
                     </else>
                 </if>
             </do-only-if-not-library>
