@@ -486,8 +486,6 @@
         <property name="dx" location="${android.build.tools.dir}/dx${bat}" />
         <property name="zipalign" location="${android.build.tools.dir}/zipalign${exe}" />
 
-    </target>
-    <target name="-compile-libraries" depends="-build-setup">
         <!-- read the previous build mode -->
         <property file="${out.build.prop.file}" />
         <!-- if empty the props won't be set, meaning it's a new build.
@@ -537,16 +535,36 @@
              and set some properties with the results.
              All property names are passed as parameters ending in -Out -->
         <gettarget
-                androidJarFileOut="project.target.android.jar"
-                androidAidlFileOut="project.target.framework.aidl"
-                bootClassPathOut="project.target.class.path"
-                targetApiOut="project.target.apilevel"
-                minSdkVersionOut="project.minSdkVersion" />
+            androidJarFileOut="project.target.android.jar"
+            androidAidlFileOut="project.target.framework.aidl"
+            bootClassPathOut="project.target.class.path"
+            targetApiOut="project.target.apilevel"
+            minSdkVersionOut="project.minSdkVersion" />
 
         <!-- Value of the hasCode attribute (Application node) extracted from manifest file -->
         <xpath input="${manifest.abs.file}" expression="/manifest/application/@android:hasCode"
-                    output="manifest.hasCode" default="true"/>
+            output="manifest.hasCode" default="true"/>
 
+
+        <echo level="info">----------</echo>
+        <echo level="info">Resolving Dependencies for ${ant.project.name}...</echo>
+        <dependency
+            libraryFolderPathOut="project.library.folder.path"
+            libraryPackagesOut="project.library.packages"
+            libraryManifestFilePathOut="project.library.manifest.file.path"
+            libraryResFolderPathOut="project.library.res.folder.path"
+            libraryBinAidlFolderPathOut="project.library.bin.aidl.folder.path"
+            libraryRFilePathOut="project.library.bin.r.file.path"
+            libraryNativeFolderPathOut="project.library.native.folder.path"
+            jarLibraryPathOut="project.all.jars.path"
+            targetApi="${project.target.apilevel}"
+            renderscriptSupportMode="${renderscript.support.mode}"
+            buildToolsFolder="${android.build.tools.dir}"
+            renderscriptSupportLibsOut="project.rs.support.libs.path"
+            verbose="${verbose}" />
+
+    </target>
+    <target name="-compile-libraries" depends="-build-setup">
         <echo level="info">----------</echo>
         <echo level="info">Creating output directories if needed...</echo>
         <mkdir dir="${resource.absolute.dir}" />
@@ -560,24 +578,6 @@
             <mkdir dir="${out.classes.absolute.dir}" />
             <mkdir dir="${out.dexed.absolute.dir}" />
         </do-only-if-manifest-hasCode>
-
-        <echo level="info">----------</echo>
-        <echo level="info">Resolving Dependencies for ${ant.project.name}...</echo>
-        <dependency
-                libraryFolderPathOut="project.library.folder.path"
-                libraryPackagesOut="project.library.packages"
-                libraryManifestFilePathOut="project.library.manifest.file.path"
-                libraryResFolderPathOut="project.library.res.folder.path"
-                libraryBinAidlFolderPathOut="project.library.bin.aidl.folder.path"
-                libraryRFilePathOut="project.library.bin.r.file.path"
-                libraryNativeFolderPathOut="project.library.native.folder.path"
-                jarLibraryPathOut="project.all.jars.path"
-                targetApi="${project.target.apilevel}"
-                renderscriptSupportMode="${renderscript.support.mode}"
-                buildToolsFolder="${android.build.tools.dir}"
-                renderscriptSupportLibsOut="project.rs.support.libs.path"
-                verbose="${verbose}" />
-
         <!-- compile the libraries if any -->
         <if>
             <condition>
