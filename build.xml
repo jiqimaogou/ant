@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="android_rules" default="debug">
+<project name="android_rules" default="debug" xmlns:antcontrib="antlib:net.sf.antcontrib">
+    <property name="ant-contrib.jar" value="${sdk.dir}/tools/lib/ant-contrib-1.0b3.jar"/>
+
+    <taskdef resource="net/sf/antcontrib/antlib.xml" 
+        classpath="${ant-contrib.jar}"
+        uri="antlib:net.sf.antcontrib">       
+    </taskdef>
 
     <!--
         This build file is imported by the project build file. It contains
@@ -403,7 +409,9 @@
 
     <!-- generic setup -->
     <target name="-setup" depends="-check-env">
+        <echo level="info">*******************************************************</echo>
         <echo level="info">Project Name: ${ant.project.name}</echo>
+        <echo level="info">*******************************************************</echo>
         <gettype projectTypeOut="project.type" />
 
         <!-- sets a few boolean based on project.type
@@ -1362,12 +1370,26 @@
     <!-- ********** Install/uninstall specific targets ********* -->
     <!-- ******************************************************* -->
 
-    <target name="install"
+    <target name="install" depends="-setup"
                 description="Installs the newly build package. Must be used in conjunction with a build target
                             (debug/release/instrument). If the application was previously installed, the application
                             is reinstalled if the signature matches." >
         <!-- only do install if *not* a library project -->
         <do-only-if-not-library elseText="Library project: nothing to install!" >
+                <antcontrib:if>
+                    <isset property="${out.final.file}"/>
+                    <then>
+                    </then>
+                    <else>
+                        <antcontrib:timestampselector property='out.final.file'>
+                            <path>
+                                <fileset dir="${out.absolute.dir}" casesensitive="yes">
+                                    <include name="**/*.apk"/>
+                                </fileset>
+                            </path>
+                        </antcontrib:timestampselector>
+                    </else>
+                </antcontrib:if>
             <if>
                 <condition>
                     <isset property="out.final.file" />
@@ -1387,6 +1409,18 @@
                                 <arg value="-r" />
                                 <arg path="${out.final.file}" />
                             </exec>
+                                <!-- 启动应用 -->
+                                <!-- 桌面activity:project.app.launcher.activity -->
+                                <xpath input="${out.manifest.abs.file}"
+                                    expression="//activity[.//category[contains(@android:name,'android.intent.category.LAUNCHER')]]/@android:name" output="project.app.launcher.activity" />
+                                <!-- 启动应用 -->
+                                <exec executable="${adb}" failonerror="true">
+                                    <arg value="shell"/>
+                                    <arg value="am"/>
+                                    <arg value="start"/>
+                                    <arg value="-n"/>
+                                    <arg value="${project.app.package}/${project.app.launcher.activity}"/>
+                                </exec>
 
                             <!-- now install the tested project if applicable -->
                             <!-- can't use project.is.test since the setup target might not have run -->
