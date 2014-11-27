@@ -203,6 +203,9 @@
     <!-- Intermediate files -->
     <property name="dex.file.name" value="classes.dex" />
     <property name="intermediate.dex.file" location="${out.absolute.dir}/${dex.file.name}" />
+    <property name="dex.file2.includes" value="classes2.dex" />
+    <property name="dex.file2.name" value="classes2.dex" />
+    <property name="intermediate.dex.file2" location="${out.absolute.dir}/${dex.file2.name}" />
     <property name="resource.package.file.name" value="${ant.project.name}.ap_" />
 
     <!-- Build property file -->
@@ -818,6 +821,7 @@
                 <then>
                     <echo level="info">Creating library output jar file...</echo>
                     <property name="out.library.jar.file" location="${out.absolute.dir}/classes.jar" />
+                    <property name="out.library.jar.file2" location="${out.absolute.dir}/classes2.jar" />
                     <if>
                         <condition>
                             <length string="${android.package.excludes}" trim="true" when="greater" length="0" />
@@ -832,6 +836,12 @@
                     <jar destfile="${out.library.jar.file}">
                         <fileset dir="${out.classes.absolute.dir}"
                                 includes="**/*.class"
+                                excludes="${project.app.package.path}/R.class ${project.app.package.path}/R$*.class ${project.app.package.path}/BuildConfig.class ${dex.file2.includes}"/>
+                        <fileset dir="${source.absolute.dir}" excludes="**/*.java ${android.package.excludes}" />
+                    </jar>
+                    <jar destfile="${out.library.jar.file2}">
+                        <fileset dir="${out.classes.absolute.dir}"
+                                includes="${dex.file2.includes}"
                                 excludes="${project.app.package.path}/R.class ${project.app.package.path}/R$*.class ${project.app.package.path}/BuildConfig.class"/>
                         <fileset dir="${source.absolute.dir}" excludes="**/*.java ${android.package.excludes}" />
                     </jar>
