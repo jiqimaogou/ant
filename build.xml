@@ -959,6 +959,10 @@
     </target>
 
     <!-- Packages the application. -->
+    <target name="package" depends="-build-setup, -set-debug-files, -set-debug-mode, -package, -post-package">
+    </target>
+
+    <!-- Packages the application. -->
     <target name="-package" depends="-package-resources">
         <!-- only package apk if *not* a library project -->
         <do-only-if-not-library elseText="Library project: do not package apk..." >
