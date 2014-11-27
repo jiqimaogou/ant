@@ -184,6 +184,7 @@
     <property name="out.absolute.dir" location="${out.dir}" />
     <property name="out.classes.absolute.dir" location="${out.dir}/classes" />
     <property name="out.res.absolute.dir" location="${out.dir}/res" />
+    <property name="out.crunch.res.absolute.dir" location="${out.dir}/res/crunch" />
     <property name="out.rs.obj.absolute.dir" location="${out.dir}/rsObj" />
     <property name="out.rs.libs.absolute.dir" location="${out.dir}/rsLibs" />
     <property name="out.aidl.absolute.dir" location="${out.dir}/aidl" />
@@ -612,6 +613,7 @@
         <mkdir dir="${jar.libs.absolute.dir}" />
         <mkdir dir="${out.absolute.dir}" />
         <mkdir dir="${out.res.absolute.dir}" />
+        <mkdir dir="${out.crunch.res.absolute.dir}" />
         <mkdir dir="${out.rs.obj.absolute.dir}" />
         <mkdir dir="${out.rs.libs.absolute.dir}" />
         <do-only-if-manifest-hasCode>
@@ -739,7 +741,8 @@
                     ignoreAssets="${aapt.ignore.assets}"
                     binFolder="${out.absolute.dir}"
                     proguardFile="${out.absolute.dir}/proguard.txt">
-                <res path="${out.res.absolute.dir}" />
+                <res path="${out.crunch.res.absolute.dir}" />
+                <!-- <res path="${out.res.absolute.dir}" /> -->
                 <res path="${resource.absolute.dir}" />
             </aapt>
 
@@ -961,7 +964,8 @@
             <arg value="-S" />
             <arg path="${resource.absolute.dir}" />
             <arg value="-C" />
-            <arg path="${out.res.absolute.dir}" />
+            <!-- <arg path="${out.res.absolute.dir}" /> -->
+            <arg path="${out.crunch.res.absolute.dir}" />
         </exec>
     </target>
 
@@ -991,7 +995,8 @@
                     previousBuildType="${build.last.target}"
                     buildType="${build.target}"
                     ignoreAssets="${aapt.ignore.assets}">
-                <res path="${out.res.absolute.dir}" />
+                <!-- <res path="${out.res.absolute.dir}" /> -->
+                <res path="${out.crunch.res.absolute.dir}" />
                 <res path="${resource.absolute.dir}" />
                 <!-- <nocompress /> forces no compression on any files in assets or res/raw -->
                 <!-- <nocompress extension="xml" /> forces no compression on specific file extensions in assets and res/raw -->
