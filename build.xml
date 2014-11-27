@@ -36,6 +36,39 @@
     <!-- You can override these values in your build.xml or ant.properties.
          Overriding any other properties may result in broken build. -->
 
+    <!-- 腾讯自定义 -->
+
+    <!-- apk文件名 --> <!-- qzone_4.9.8.160_android_r80200_20141121145422_debug -->
+    <!-- 版本号4.9.8.160 -->
+    <!-- svn版本定义r80200 -->
+    <!-- Get subversion revision number. -->
+    <antcontrib:if>
+        <isset property="env.SVN_REVISION" />
+        <antcontrib:then>
+            <property name="svn.version" value="${env.SVN_REVISION}" />
+        </antcontrib:then>
+        <antcontrib:else>
+            <exec executable="svnversion" outputproperty="svn.version">
+                <!-- Specify '-c' to get last changed rather than current revisions. -->
+                <arg value="-c" />
+                <!-- Use redirector/filterchain to parse output.
+                 svnversion -c will return output in format [initial]:[current]
+                 and we want to strip off [initial]: -->
+                <redirector>
+                    <outputfilterchain>
+                        <tokenfilter>
+                            <replaceregex pattern="[0-9]+\:" replace="" />
+                        </tokenfilter>
+                    </outputfilterchain>
+                </redirector>
+            </exec>
+        </antcontrib:else>
+    </antcontrib:if> 
+    <!-- 时间戳属性定义20141121145422 -->
+    <tstamp>
+        <format property="build.date.base" pattern="yyyyMMdd" />
+        <format property="build.date" pattern="yyyyMMddHHmmss" />
+    </tstamp> 
     <!-- Tells adb which device to target. You can change this from the command line
          by invoking "ant -Dadb.device.arg=-d" for device "ant -Dadb.device.arg=-e" for
          the emulator. -->
@@ -49,7 +82,7 @@
          before, then this will create them with empty values, which are then ignored
          by the custom tasks receiving them. -->
     <property name="version.code" value="" />
-    <property name="version.name" value="" />
+    <!-- <property name="version.name" value="" /> -->
     <property name="aapt.resource.filter" value="" />
     <!-- 'aapt.ignore.assets' is the list of file patterns to ignore under /res and /assets.
          Default is "!.svn:!.git:.*:<dir>_*:!CVS:!thumbs.db:!picasa.ini:!*.scc:*~"
@@ -1003,9 +1036,12 @@
     <!-- ******************************************************* -->
 
     <target name="-set-debug-files" depends="-set-mode-check">
+        <xpath input="${manifest.abs.file}"
+            expression="/manifest/@android:versionName" output="version.name" />
 
         <property name="out.packaged.file" location="${out.absolute.dir}/${ant.project.name}-debug-unaligned.apk" />
-        <property name="out.final.file" location="${out.absolute.dir}/${ant.project.name}-debug.apk" />
+        <property name="out.final.file.name" location="${out.absolute.dir}/${ant.project.name}_${version.name}_android_r${svn.version}_${build.date}_debug" />
+        <property name="out.final.file" location="${out.final.file.name}.apk" />
         <property name="build.is.mode.set" value="true" />
     </target>
 
@@ -1113,7 +1149,8 @@
 
     <target name="-set-release-mode" depends="-set-mode-check">
         <property name="out.packaged.file" location="${out.absolute.dir}/${ant.project.name}-release-unsigned.apk" />
-        <property name="out.final.file" location="${out.absolute.dir}/${ant.project.name}-release.apk" />
+        <property name="out.final.file.name" location="${out.absolute.dir}/${ant.project.name}_${version.name}_android_r${svn.version}_${build.date}_release.apk" />
+        <property name="out.final.file" location="${out.final.file.name}.apk" />
         <property name="build.is.mode.set" value="true" />
 
         <!-- record the current build target -->
