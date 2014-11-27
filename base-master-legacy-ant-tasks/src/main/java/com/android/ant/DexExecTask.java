@@ -134,7 +134,7 @@ public class DexExecTask extends SingleDependencyTask {
         final int count = inputs.size();
         for (int i = 0 ; i < count; i++) {
             File input = inputs.get(i);
-            if (input.isFile()) {
+            if (input.isFile() && input.getName().endsWith(".jar")) {
                 // check if this libs needs to be pre-dexed
                 String fileName = getDexFileName(input);
                 File dexedLib = new File(mDexedLibs, fileName);
