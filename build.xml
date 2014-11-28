@@ -817,8 +817,8 @@
             </if>
 
             <!-- if the project is a library then we generate a jar file -->
-            <if condition="${project.is.library}">
-                <then>
+            <!-- <if condition="${project.is.library}"> -->
+                <!-- <then> -->
                     <echo level="info">Creating library output jar file...</echo>
                     <property name="out.library.jar.file" location="${out.absolute.dir}/classes.jar" />
                     <property name="out.library.jar.file2" location="${out.absolute.dir}/classes2.jar" />
@@ -845,8 +845,8 @@
                                 excludes="${project.app.package.path}/R.class ${project.app.package.path}/R$*.class ${project.app.package.path}/BuildConfig.class"/>
                         <fileset dir="${source.absolute.dir}" excludes="**/*.java ${android.package.excludes}" />
                     </jar>
-                </then>
-            </if>
+                <!-- </then> -->
+            <!-- </if> -->
 
         </do-only-if-manifest-hasCode>
     </target>
