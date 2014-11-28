@@ -300,6 +300,7 @@
     <macrodef name="dex-helper">
         <element name="external-libs" optional="yes" implicit="yes" />
         <attribute name="nolocals" default="false" />
+        <attribute name="output" default="${intermediate.dex.file}" />
         <sequential>
             <!-- sets the primary input for dex. If a pre-dex task sets it to
                  something else this has no effect -->
@@ -319,7 +320,7 @@
             </if>
 
             <dex executable="${dx}"
-                    output="${intermediate.dex.file}"
+                    output="@{output}"
                     dexedlibs="${out.dexed.absolute.dir}"
                     nolocals="@{nolocals}"
                     forceJumbo="${dex.force.jumbo}"
@@ -975,24 +976,14 @@
                                 "${project.app.package.path}/R.class ${project.app.package.path}/R$*.class ${project.app.package.path}/BuildConfig.class"/>
                         </jar>
                         <dex-helper nolocals="false">
-                            <path>
-                                <fileset dir="${out.dex.input.absolute.dir}" casesensitive="yes">
-                                    <include name="**/*.class"/>
-                                    <exclude name="${dex.file2.includes}"/>
-                                </fileset>
-                            </path>
+                            <path path="${out.library.jar.file}"/>
                             <!-- <path path="${out.dex.input.absolute.dir}"/> -->
                             <path refid="out.dex.jar.input.ref" />
                         </dex-helper>
-                        <dex-helper nolocals="false">
-                            <path>
-                                <fileset dir="${out.dex.input.absolute.dir}" casesensitive="yes">
-                                    <!-- <include name="**/*.class"/> -->
-                                    <includes name="${dex.file2.includes}"/>
-                                </fileset>
-                            </path>
+                        <dex-helper nolocals="false" output="${intermediate.dex.file2}">
+                            <path path="${out.library.jar.file2}"/>
                             <!-- <path path="${out.dex.input.absolute.dir}"/> -->
-                            <path refid="out.dex.jar.input.ref" />
+                            <!-- <path refid="out.dex.jar.input.ref" /> -->
                         </dex-helper>
                         <!-- <dex-helper /> -->
                     </else>
