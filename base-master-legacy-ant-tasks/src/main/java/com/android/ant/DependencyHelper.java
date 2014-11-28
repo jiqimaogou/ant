@@ -77,6 +77,7 @@ public class DependencyHelper {
     public static class JarProcessor extends AdvancedLibraryProcessor {
 
         private final List<File> mJars = new ArrayList<File>();
+        private final List<File> mJars2 = new ArrayList<File>();
 
         private final FilenameFilter mFilter = new FilenameFilter() {
             @Override
@@ -87,6 +88,10 @@ public class DependencyHelper {
 
         public List<File> getJars() {
             return mJars;
+        }
+
+        public List<File> getJars2() {
+            return mJars2;
         }
 
         public FilenameFilter getFilter() {
@@ -109,6 +114,9 @@ public class DependencyHelper {
                     mJars.add(jarFile);
                 }
             }
+
+            mJars2.add(new File(libRootPath + "/" + SdkConstants.FD_OUTPUT +
+                    "/" + SdkConstants.FN_CLASSES_JAR + "2"));
         }
     }
 
@@ -122,7 +130,7 @@ public class DependencyHelper {
             // TEMP WORKAROUND: ignore classes.jar as all the output of libraries are
             // called the same (in Ant) but are not actually the same jar file.
             // TODO: Be aware of library output vs. regular jar dependency.
-            if (f.isFile() && f.getName().equals(SdkConstants.FN_CLASSES_JAR) == false) {
+            if (f.isFile() && (f.getName().equals(SdkConstants.FN_CLASSES_JAR) == false || f.getName().equals(SdkConstants.FN_CLASSES_JAR + "2") == false)) {
                 i++;
             } else {
                 results.add(f);

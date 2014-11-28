@@ -15,7 +15,7 @@
                 <!-- <exclude name="**/*Test*"/> -->
             </fileset>
         </path>
-        <javac srcdir="src" destdir="classes" classpathref="project.javac.classpath"/>
+        <javac srcdir="src\main\java" destdir="classes" classpathref="project.javac.classpath"/>
     </target>
 
     <target name="jar" description="JARs the Task" depends="compile">

@@ -59,6 +59,7 @@ public class ComputeDependencyTask extends GetLibraryPathTask {
     private String mLibraryResFolderPathOut;
     private String mLibraryPackagesOut;
     private String mJarLibraryPathOut;
+    private String mJarLibraryPathOut2;
     private String mLibraryNativeFolderPathOut;
     private String mLibraryBinAidlFolderPathOut;
     private String mLibraryRFilePathOut;
@@ -82,6 +83,10 @@ public class ComputeDependencyTask extends GetLibraryPathTask {
 
     public void setJarLibraryPathOut(String jarLibraryPathOut) {
         mJarLibraryPathOut = jarLibraryPathOut;
+    }
+
+    public void setJarLibraryPathOut2(String jarLibraryPathOut2) {
+        mJarLibraryPathOut2 = jarLibraryPathOut2;
     }
 
     public void setLibraryBinAidlFolderPathOut(String libraryBinAidlFolderPathOut) {
@@ -124,6 +129,9 @@ public class ComputeDependencyTask extends GetLibraryPathTask {
             throw new BuildException("Missing attribute libraryPackagesOut");
         }
         if (mJarLibraryPathOut == null) {
+            throw new BuildException("Missing attribute jarLibraryPathOut");
+        }
+        if (mJarLibraryPathOut2 == null) {
             throw new BuildException("Missing attribute jarLibraryPathOut");
         }
         if (mLibraryNativeFolderPathOut == null) {
@@ -314,6 +322,29 @@ public class ComputeDependencyTask extends GetLibraryPathTask {
         }
         antProject.addReference(mJarLibraryPathOut, jarsPath);
 
+        List<File> jars2 = processor.getJars2();
+        // now sanitize the path to remove dups
+        jars2 = DependencyHelper.sanitizePaths(projectFolder, new IPropertySource() {
+            @Override
+            public String getProperty(String name) {
+                return antProject.getProperty(name);
+            }
+
+            @Override
+            public void debugPrint() {
+            }
+        }, jars2);
+
+        // and create a Path object for them
+        Path jarsPath2 = new Path(antProject);
+        for (File f : jars2) {
+            if (mVerbose) {
+                System.out.println("- " + f.getAbsolutePath());
+            }
+            PathElement element = jarsPath.createPathElement();
+            element.setPath(f.getAbsolutePath());
+        }
+        antProject.addReference(mJarLibraryPathOut2, jarsPath2);
         if (mVerbose) {
             System.out.println();
         }
