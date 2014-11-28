@@ -846,6 +846,10 @@
                                 excludes="${project.app.package.path}/R.class ${project.app.package.path}/R$*.class ${project.app.package.path}/BuildConfig.class ${dex.file2.includes}"/>
                         <!-- <fileset dir="${source.absolute.dir}" excludes="**/*.java ${android.package.excludes}" /> -->
                         <zipgroupfileset dir="${jar.libs.absolute.dir}" includes="${dex.jars.package.includes}" />
+
+                        <manifest>
+                            <attribute name="Library-Name" value="${ant.project.name}" />
+                        </manifest>
                     </jar>
                     <jar destfile="${out.library.jar.file2}">
                         <fileset dir="${out.classes.absolute.dir}"
