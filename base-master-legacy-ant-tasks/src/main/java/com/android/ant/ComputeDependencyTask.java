@@ -61,6 +61,7 @@ public class ComputeDependencyTask extends GetLibraryPathTask {
     private String mJarLibraryPathOut;
     private String mJarLibraryPathOut2;
     private String mDexJarLibraryPathOut;
+    private String mDexJarsPackageLibraryPathOut;
     private String mLibraryNativeFolderPathOut;
     private String mLibraryBinAidlFolderPathOut;
     private String mLibraryRFilePathOut;
@@ -92,6 +93,10 @@ public class ComputeDependencyTask extends GetLibraryPathTask {
 
     public void setDexJarLibraryPathOut(String dexJarLibraryPathOut) {
         mDexJarLibraryPathOut = dexJarLibraryPathOut;
+    }
+
+    public void setDexJarsPackageLibraryPathOut(String dexJarsPackageLibraryPathOut) {
+        mDexJarsPackageLibraryPathOut = dexJarsPackageLibraryPathOut;
     }
 
     public void setLibraryBinAidlFolderPathOut(String libraryBinAidlFolderPathOut) {
@@ -140,6 +145,9 @@ public class ComputeDependencyTask extends GetLibraryPathTask {
             throw new BuildException("Missing attribute jarLibraryPathOut");
         }
         if (mDexJarLibraryPathOut == null) {
+            throw new BuildException("Missing attribute jarLibraryPathOut");
+        }
+        if (mDexJarsPackageLibraryPathOut == null) {
             throw new BuildException("Missing attribute jarLibraryPathOut");
         }
         if (mLibraryNativeFolderPathOut == null) {
@@ -317,7 +325,9 @@ public class ComputeDependencyTask extends GetLibraryPathTask {
         }, jars);
 
         List<File> dexJars = processor.getDexJars();
+        List<File> dexPackageJars = processor.getDexPackageJars();
         jars.removeAll(dexJars);
+        jars.removeAll(dexPackageJars);
 
         // and create a Path object for them
         Path jarsPath = new Path(antProject);
@@ -332,17 +342,6 @@ public class ComputeDependencyTask extends GetLibraryPathTask {
             element.setPath(f.getAbsolutePath());
         }
         antProject.addReference(mJarLibraryPathOut, jarsPath);
-
-        // and create a Path object for them
-        Path dexJarsPath = new Path(antProject);
-        for (File f : dexJars) {
-            if (mVerbose) {
-                System.out.println("- " + f.getAbsolutePath());
-            }
-            PathElement element = jarsPath.createPathElement();
-            element.setPath(f.getAbsolutePath());
-        }
-        antProject.addReference(mDexJarLibraryPathOut, dexJarsPath);
 
         List<File> jars2 = processor.getJars2();
         // now sanitize the path to remove dups
@@ -367,6 +366,28 @@ public class ComputeDependencyTask extends GetLibraryPathTask {
             element.setPath(f.getAbsolutePath());
         }
         antProject.addReference(mJarLibraryPathOut2, jarsPath2);
+
+        // and create a Path object for them
+        Path dexJarsPath = new Path(antProject);
+        for (File f : dexJars) {
+            if (mVerbose) {
+                System.out.println("- " + f.getAbsolutePath());
+            }
+            PathElement element = jarsPath.createPathElement();
+            element.setPath(f.getAbsolutePath());
+        }
+        antProject.addReference(mDexJarLibraryPathOut, dexJarsPath);
+
+        // and create a Path object for them
+        Path dexPackageJarsPath = new Path(antProject);
+        for (File f : dexPackageJars) {
+            if (mVerbose) {
+                System.out.println("- " + f.getAbsolutePath());
+            }
+            PathElement element = jarsPath.createPathElement();
+            element.setPath(f.getAbsolutePath());
+        }
+        antProject.addReference(mDexJarsPackageLibraryPathOut, dexPackageJarsPath);
 
         if (mVerbose) {
             System.out.println();

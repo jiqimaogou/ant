@@ -606,6 +606,7 @@
             jarLibraryPathOut="project.all.jars.path"
             jarLibraryPathOut2="project.all.jars.path2"
             dexJarLibraryPathOut="project.all.dex.jars.path"
+            dexJarsPackageLibraryPathOut="project.all.dex.package.jars.path"
             targetApi="${project.target.apilevel}"
             renderscriptSupportMode="${renderscript.support.mode}"
             buildToolsFolder="${android.build.tools.dir}"

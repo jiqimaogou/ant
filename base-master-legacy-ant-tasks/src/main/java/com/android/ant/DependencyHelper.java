@@ -76,9 +76,10 @@ public class DependencyHelper {
      */
     public static class JarProcessor extends AdvancedLibraryProcessor {
 
-        private final List<File> mDexJars = new ArrayList<File>();
         private final List<File> mJars = new ArrayList<File>();
         private final List<File> mJars2 = new ArrayList<File>();
+        private final List<File> mDexJars = new ArrayList<File>();
+        private final List<File> mDexPackageJars = new ArrayList<File>();
 
         private final FilenameFilter mFilter = new FilenameFilter() {
             @Override
@@ -97,6 +98,10 @@ public class DependencyHelper {
 
         public List<File> getDexJars() {
             return mDexJars;
+        }
+
+        public List<File> getDexPackageJars() {
+            return mDexPackageJars;
         }
 
         public FilenameFilter getFilter() {
@@ -127,6 +132,28 @@ public class DependencyHelper {
             if (libraryIsDex) { // 
                 mDexJars.add(new File(libRootPath + "/" + SdkConstants.FD_OUTPUT +
                             "/" + SdkConstants.FN_CLASSES_JAR));
+            }
+
+            if (jarFiles != null) {
+                String includes2 = properties.getProperty("project.all.jars.includes2");
+                if (includes2 != null) {
+                    for (File jarFile : jarFiles) {
+                        if (includes2.contains(jarFile.getName())) {
+                            mJars2.add(jarFile);
+                        }
+                    }
+                }
+            }
+
+            if (jarFiles != null) {
+                String dexJarsPackageIncludes = properties.getProperty("dex.jars.package.includes");
+                if (dexJarsPackageIncludes != null) {
+                    for (File jarFile : jarFiles) {
+                        if (dexJarsPackageIncludes.contains(jarFile.getName())) {
+                            mDexPackageJars.add(jarFile);
+                        }
+                    }
+                }
             }
         }
     }
