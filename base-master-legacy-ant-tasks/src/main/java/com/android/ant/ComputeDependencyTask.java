@@ -142,7 +142,7 @@ public class ComputeDependencyTask extends GetLibraryPathTask {
             throw new BuildException("Missing attribute jarLibraryPathOut");
         }
         if (mJarLibraryPathOut2 == null) {
-            throw new BuildException("Missing attribute jarLibraryPathOut");
+            throw new BuildException("Missing attribute jarLibraryPathOut2");
         }
         if (mDexJarLibraryPathOut == null) {
             throw new BuildException("Missing attribute jarLibraryPathOut");
@@ -362,7 +362,7 @@ public class ComputeDependencyTask extends GetLibraryPathTask {
             if (mVerbose) {
                 System.out.println("- " + f.getAbsolutePath());
             }
-            PathElement element = jarsPath.createPathElement();
+            PathElement element = jarsPath2.createPathElement();
             element.setPath(f.getAbsolutePath());
         }
         antProject.addReference(mJarLibraryPathOut2, jarsPath2);

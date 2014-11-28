@@ -133,7 +133,7 @@ public class DependencyHelper {
             }
 
             if (jarFiles != null) {
-                String includes2 = properties.getProperty("project.all.jars.includes2");
+                String includes2 = properties.getProperty("dex.file2.includes");
                 if (includes2 != null) {
                     mJars2.add(new File(libRootPath + "/" + SdkConstants.FD_OUTPUT +
                                 "/" + "classes2.jar"));
@@ -168,7 +168,7 @@ public class DependencyHelper {
             // TEMP WORKAROUND: ignore classes.jar as all the output of libraries are
             // called the same (in Ant) but are not actually the same jar file.
             // TODO: Be aware of library output vs. regular jar dependency.
-            if (f.isFile() && (f.getName().equals(SdkConstants.FN_CLASSES_JAR) == false && f.getName().equals(SdkConstants.FN_CLASSES_JAR + "2") == false)) {
+            if (f.isFile() && (f.getName().equals(SdkConstants.FN_CLASSES_JAR) == false && f.getName().equals("classes2.jar") == false)) {
                 i++;
             } else {
                 results.add(f);
@@ -212,7 +212,7 @@ public class DependencyHelper {
     /**
      *
      * @param projectFolder the project root folder.
-     * @param properties an {@link IPropertySource} that can provide the project properties values.
+     * @param properties an {@link IPropertySource} that can provide the project properties values.dex.jars.package.includes
      * @param verbose whether the output is verbose
      */
     public DependencyHelper(File projectFolder, IPropertySource properties, boolean verbose) {

@@ -982,16 +982,16 @@
                                 includes=
                                 "${project.app.package.path}/R.class ${project.app.package.path}/R$*.class ${project.app.package.path}/BuildConfig.class"/>
                         </jar>
-                        <dex-helper nolocals="false">
-                            <path path="${out.library.jar.file}"/>
-                            <!-- <path path="${out.dex.input.absolute.dir}"/> -->
-                            <path refid="out.dex.jar.input.ref" />
-                        </dex-helper>
                         <dex-helper nolocals="false" output="${intermediate.dex.file2}">
                             <path path="${out.library.jar.file2}"/>
                             <!-- <path path="${out.dex.input.absolute.dir}"/> -->
                             <!-- <path refid="out.dex.jar.input.ref" /> -->
                             <path refid="project.all.jars.path2" />
+                        </dex-helper>
+                        <dex-helper nolocals="false">
+                            <path path="${out.library.jar.file}"/>
+                            <!-- <path path="${out.dex.input.absolute.dir}"/> -->
+                            <path refid="out.dex.jar.input.ref" />
                         </dex-helper>
                         <!-- <dex-helper /> -->
                     </else>
