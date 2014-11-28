@@ -844,13 +844,14 @@
                         <fileset dir="${out.classes.absolute.dir}"
                                 includes="**/*.class"
                                 excludes="${project.app.package.path}/R.class ${project.app.package.path}/R$*.class ${project.app.package.path}/BuildConfig.class ${dex.file2.includes}"/>
-                        <fileset dir="${source.absolute.dir}" excludes="**/*.java ${android.package.excludes}" />
+                        <!-- <fileset dir="${source.absolute.dir}" excludes="**/*.java ${android.package.excludes}" /> -->
+                        <zipgroupfileset dir="${jar.libs.absolute.dir}" includes="${dex.jars.package.includes}" />
                     </jar>
                     <jar destfile="${out.library.jar.file2}">
                         <fileset dir="${out.classes.absolute.dir}"
                                 includes="${dex.file2.includes}"
                                 excludes="${project.app.package.path}/R.class ${project.app.package.path}/R$*.class ${project.app.package.path}/BuildConfig.class"/>
-                        <fileset dir="${source.absolute.dir}" excludes="**/*.java ${android.package.excludes}" />
+                        <!-- <fileset dir="${source.absolute.dir}" excludes="**/*.java ${android.package.excludes}" /> -->
                     </jar>
                 <!-- </then> -->
             <!-- </if> -->
@@ -990,6 +991,7 @@
                             <path path="${out.library.jar.file2}"/>
                             <!-- <path path="${out.dex.input.absolute.dir}"/> -->
                             <!-- <path refid="out.dex.jar.input.ref" /> -->
+                            <path refid="project.all.jars.path2" />
                         </dex-helper>
                         <!-- <dex-helper /> -->
                     </else>

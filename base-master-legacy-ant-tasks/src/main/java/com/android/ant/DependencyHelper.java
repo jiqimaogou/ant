@@ -125,8 +125,6 @@ public class DependencyHelper {
                 }
             }
 
-            mJars2.add(new File(libRootPath + "/" + SdkConstants.FD_OUTPUT +
-                    "/" + "classes2.jar"));
 
             boolean libraryIsDex = "true".equals(properties.getProperty("library.is.dex"));
             if (libraryIsDex) { // 
@@ -137,6 +135,8 @@ public class DependencyHelper {
             if (jarFiles != null) {
                 String includes2 = properties.getProperty("project.all.jars.includes2");
                 if (includes2 != null) {
+                    mJars2.add(new File(libRootPath + "/" + SdkConstants.FD_OUTPUT +
+                                "/" + "classes2.jar"));
                     for (File jarFile : jarFiles) {
                         if (includes2.contains(jarFile.getName())) {
                             mJars2.add(jarFile);
@@ -168,7 +168,7 @@ public class DependencyHelper {
             // TEMP WORKAROUND: ignore classes.jar as all the output of libraries are
             // called the same (in Ant) but are not actually the same jar file.
             // TODO: Be aware of library output vs. regular jar dependency.
-            if (f.isFile() && (f.getName().equals(SdkConstants.FN_CLASSES_JAR) == false || f.getName().equals(SdkConstants.FN_CLASSES_JAR + "2") == false)) {
+            if (f.isFile() && (f.getName().equals(SdkConstants.FN_CLASSES_JAR) == false && f.getName().equals(SdkConstants.FN_CLASSES_JAR + "2") == false)) {
                 i++;
             } else {
                 results.add(f);
