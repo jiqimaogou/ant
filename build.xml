@@ -302,34 +302,40 @@
         <attribute name="nolocals" default="false" />
         <attribute name="output" default="${intermediate.dex.file}" />
         <sequential>
-            <!-- sets the primary input for dex. If a pre-dex task sets it to
-                 something else this has no effect -->
-            <property name="out.dex.input.absolute.dir" value="${out.classes.absolute.dir}" />
+            <antcontrib:trycatch>
+                <try>
+                    <!-- sets the primary input for dex. If a pre-dex task sets it to
+                      something else this has no effect -->
+                    <property name="out.dex.input.absolute.dir" value="${out.classes.absolute.dir}" />
 
-            <!-- set the secondary dx input: the project (and library) jar files
-                 If a pre-dex task sets it to something else this has no effect -->
-            <if>
-                <condition>
-                    <isreference refid="out.dex.jar.input.ref" />
-                </condition>
-                <else>
-                    <path id="out.dex.jar.input.ref">
-                        <path refid="project.all.jars.path" />
-                    </path>
-                </else>
-            </if>
+                    <!-- set the secondary dx input: the project (and library) jar files
+                      If a pre-dex task sets it to something else this has no effect -->
+                    <if>
+                        <condition>
+                            <isreference refid="out.dex.jar.input.ref" />
+                        </condition>
+                        <else>
+                            <path id="out.dex.jar.input.ref">
+                                <path refid="project.all.jars.path" />
+                            </path>
+                        </else>
+                    </if>
 
-            <dex executable="${dx}"
-                    output="@{output}"
-                    dexedlibs="${out.dexed.absolute.dir}"
-                    nolocals="@{nolocals}"
-                    forceJumbo="${dex.force.jumbo}"
-                    disableDexMerger="${dex.disable.merger}"
-                    verbose="${verbose}">
-                <!-- <path path="${out.dex.input.absolute.dir}"/> -->
-                <!-- <path refid="out.dex.jar.input.ref" /> -->
-                <external-libs />
-            </dex>
+                    <dex executable="${dx}"
+                            output="@{output}"
+                            dexedlibs="${out.dexed.absolute.dir}"
+                            nolocals="@{nolocals}"
+                            forceJumbo="${dex.force.jumbo}"
+                            disableDexMerger="${dex.disable.merger}"
+                            verbose="${verbose}">
+                        <!-- <path path="${out.dex.input.absolute.dir}"/> -->
+                        <!-- <path refid="out.dex.jar.input.ref" /> -->
+                        <external-libs />
+                    </dex>
+                </try>
+                <catch>
+                </catch>
+            </antcontrib:trycatch>
         </sequential>
     </macrodef>
 
@@ -998,6 +1004,20 @@
                             <path refid="out.dex.jar.input.ref" />
                         </dex-helper>
                         <!-- <dex-helper /> -->
+
+                        <antcontrib:for param="file">
+                            <path refid="project.all.dex.jars.path"/>
+                            <sequential>
+                                <loadproperties>
+                                    <!-- Load the manifest entries -->
+                                    <zipentry zipfile="@{file}" name="META-INF/MANIFEST.MF"/>
+                                </loadproperties>
+                                <dex-helper nolocals="false" output="${out.absolute.dir}/${Library-Name}.jar">
+                                    <path path="@{file}"/>
+                                </dex-helper>
+                            </sequential>
+                        </antcontrib:for>
+
                     </else>
                 </if>
             </do-only-if-not-library>

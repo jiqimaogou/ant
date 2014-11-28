@@ -374,7 +374,7 @@ public class ComputeDependencyTask extends GetLibraryPathTask {
             if (mVerbose) {
                 System.out.println("- " + f.getAbsolutePath());
             }
-            PathElement element = jarsPath.createPathElement();
+            PathElement element = dexJarsPath.createPathElement();
             element.setPath(f.getAbsolutePath());
         }
         antProject.addReference(mDexJarLibraryPathOut, dexJarsPath);
