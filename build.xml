@@ -439,6 +439,21 @@
         </sequential>
     </macrodef>
 
+    <macrodef name="loadmf">
+        <attribute name="jar"/>
+        <attribute name="prefix" default=""/>
+        <sequential>
+            <loadproperties>
+                <!-- Load the manifest entries -->
+                <zipentry zipfile="@{jar}" name="META-INF/MANIFEST.MF"/>
+                <!-- Add the prefix -->
+                <filterchain>
+                    <prefixlines prefix="@{prefix}"/>
+                </filterchain>
+            </loadproperties>
+        </sequential>
+    </macrodef>
+
     <!-- ******************************************************* -->
     <!-- ******************** Build Targets ******************** -->
     <!-- ******************************************************* -->
@@ -1014,6 +1029,15 @@
                             <!-- <path path="${out.dex.input.absolute.dir}"/> -->
                             <path refid="out.dex.jar.input.ref" />
                         </dex-helper>
+                        <antcontrib:for param="file">
+                            <path refid="project.all.dex.jars.path" />
+                            <sequential>
+                                <loadmf jar="@{file}" prefix="Library-Name"/>
+                                <dex-helper nolocals="false" output="${out.absolute.dir}/${Library-Name}.dex">
+                                    <path path="@{file}"/>
+                                </dex-helper>
+                            </sequential>
+                        </antcontrib:for>
                         <!-- <dex-helper /> -->
 
                         <antcontrib:for param="file">
