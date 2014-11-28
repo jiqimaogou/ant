@@ -324,8 +324,23 @@ public class ComputeDependencyTask extends GetLibraryPathTask {
             }
         }, jars);
 
+        List<File> jars2 = processor.getJars2();
+        // now sanitize the path to remove dups
+        jars2 = DependencyHelper.sanitizePaths(projectFolder, new IPropertySource() {
+            @Override
+            public String getProperty(String name) {
+                return antProject.getProperty(name);
+            }
+
+        @Override
+            public void debugPrint() {
+            }
+        }, jars2);
+
         List<File> dexJars = processor.getDexJars();
         List<File> dexPackageJars = processor.getDexPackageJars();
+
+        jars.removeAll(jars2);
         jars.removeAll(dexJars);
         jars.removeAll(dexPackageJars);
 
@@ -342,20 +357,6 @@ public class ComputeDependencyTask extends GetLibraryPathTask {
             element.setPath(f.getAbsolutePath());
         }
         antProject.addReference(mJarLibraryPathOut, jarsPath);
-
-        List<File> jars2 = processor.getJars2();
-        // now sanitize the path to remove dups
-        jars2 = DependencyHelper.sanitizePaths(projectFolder, new IPropertySource() {
-            @Override
-            public String getProperty(String name) {
-                return antProject.getProperty(name);
-            }
-
-            @Override
-            public void debugPrint() {
-            }
-        }, jars2);
-
         // and create a Path object for them
         Path jarsPath2 = new Path(antProject);
         for (File f : jars2) {
