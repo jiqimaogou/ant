@@ -206,6 +206,7 @@
     <property name="dex.file2.includes" value="classes2.dex" />
     <property name="dex.file2.name" value="classes2.dex" />
     <property name="intermediate.dex.file2" location="${out.absolute.dir}/${dex.file2.name}" />
+    <property name="dexs.absolute.dir" value="${asset.absolute.dir}/libs" />
     <property name="resource.package.file.name" value="${ant.project.name}.ap_" />
 
     <!-- Build property file -->
@@ -625,6 +626,7 @@
         <echo level="info">Creating output directories if needed...</echo>
         <mkdir dir="${resource.absolute.dir}" />
         <mkdir dir="${jar.libs.absolute.dir}" />
+        <mkdir dir="${dexs.absolute.dir}" />
         <mkdir dir="${out.absolute.dir}" />
         <mkdir dir="${out.res.absolute.dir}" />
         <mkdir dir="${out.crunch.res.absolute.dir}" />
@@ -998,6 +1000,13 @@
                             <!-- <path refid="out.dex.jar.input.ref" /> -->
                             <path refid="project.all.jars.path2" />
                         </dex-helper>
+                        <signapk
+                                input="${intermediate.dex.file2}"
+                                output="${dexs.absolute.dir}/${dex.file2.name}"
+                                keystore="${key.store}"
+                                storepass="${key.store.password}"
+                                alias="${key.alias}"
+                                keypass="${key.alias.password}"/>
                         <dex-helper nolocals="false">
                             <path path="${out.library.jar.file}"/>
                             <!-- <path path="${out.dex.input.absolute.dir}"/> -->
@@ -1015,6 +1024,13 @@
                                 <dex-helper nolocals="false" output="${out.absolute.dir}/${Library-Name}.jar">
                                     <path path="@{file}"/>
                                 </dex-helper>
+                                <signapk
+                                        input="${out.absolute.dir}/${Library-Name}.jar"
+                                        output="${dexs.absolute.dir}/${Library-Name}.jar"
+                                        keystore="${key.store}"
+                                        storepass="${key.store.password}"
+                                        alias="${key.alias}"
+                                        keypass="${key.alias.password}"/>
                             </sequential>
                         </antcontrib:for>
 
