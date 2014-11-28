@@ -621,7 +621,7 @@
             verbose="${verbose}" />
 
     </target>
-    <target name="-compile-libraries" depends="-build-setup">
+    <target name="-compile-libraries" depends="-build-setup, -compile-resources">
         <echo level="info">----------</echo>
         <echo level="info">Creating output directories if needed...</echo>
         <mkdir dir="${resource.absolute.dir}" />
@@ -701,7 +701,7 @@
     <target name="-pre-build"/>
 
     <!-- Code Generation: compile resources (aapt -> R.java), aidl, renderscript -->
-    <target name="-code-gen">
+    <target name="-compile-resources">
         <!-- always merge manifest -->
         <mergemanifest
                 appManifest="${manifest.abs.file}"
@@ -709,6 +709,30 @@
                 enabled="${manifestmerger.enabled}">
             <library refid="project.library.manifest.file.path" />
         </mergemanifest>
+
+        <echo level="info">----------</echo>
+        <echo level="info">Handling Resources...</echo>
+        <aapt executable="${aapt}"
+                command="package"
+                verbose="${verbose}"
+                manifest="${out.manifest.abs.file}"
+                originalManifestPackage="${project.app.package}"
+                androidjar="${project.target.android.jar}"
+                rfolder="${gen.absolute.dir}"
+                nonConstantId="${android.library}"
+                libraryResFolderPathRefid="project.library.res.folder.path"
+                libraryPackagesRefid="project.library.packages"
+                libraryRFileRefid="project.library.bin.r.file.path"
+                ignoreAssets="${aapt.ignore.assets}"
+                binFolder="${out.absolute.dir}"
+                proguardFile="${out.absolute.dir}/proguard.txt">
+            <res path="${out.crunch.res.absolute.dir}" />
+            <!-- <res path="${out.res.absolute.dir}" /> -->
+            <res path="${resource.absolute.dir}" />
+        </aapt>
+    </target>
+
+    <target name="-code-gen">
 
         <do-only-if-manifest-hasCode
                 elseText="hasCode = false. Skipping aidl/renderscript/R.java">
@@ -740,28 +764,6 @@
                     previousBuildType="${build.last.is.packaging.debug}">
                 <source path="${source.absolute.dir}"/>
             </renderscript>
-
-            <echo level="info">----------</echo>
-            <echo level="info">Handling Resources...</echo>
-            <aapt executable="${aapt}"
-                    command="package"
-                    verbose="${verbose}"
-                    manifest="${out.manifest.abs.file}"
-                    originalManifestPackage="${project.app.package}"
-                    androidjar="${project.target.android.jar}"
-                    rfolder="${gen.absolute.dir}"
-                    nonConstantId="${android.library}"
-                    libraryResFolderPathRefid="project.library.res.folder.path"
-                    libraryPackagesRefid="project.library.packages"
-                    libraryRFileRefid="project.library.bin.r.file.path"
-                    ignoreAssets="${aapt.ignore.assets}"
-                    binFolder="${out.absolute.dir}"
-                    proguardFile="${out.absolute.dir}/proguard.txt">
-                <res path="${out.crunch.res.absolute.dir}" />
-                <!-- <res path="${out.res.absolute.dir}" /> -->
-                <res path="${resource.absolute.dir}" />
-            </aapt>
-
             <echo level="info">----------</echo>
             <echo level="info">Handling BuildConfig class...</echo>
             <buildconfig
