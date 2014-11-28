@@ -126,7 +126,7 @@ public class DependencyHelper {
             }
 
             mJars2.add(new File(libRootPath + "/" + SdkConstants.FD_OUTPUT +
-                    "/" + SdkConstants.FN_CLASSES_JAR + "2"));
+                    "/" + "classes2.jar"));
 
             boolean libraryIsDex = "true".equals(properties.getProperty("library.is.dex"));
             if (libraryIsDex) { // 
