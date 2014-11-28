@@ -969,6 +969,11 @@
                         </dex-helper>
                     </then>
                     <else>
+                        <jar destfile="${out.library.jar.file}">
+                            <fileset dir="${out.classes.absolute.dir}"
+                                includes=
+                                "${project.app.package.path}/R.class ${project.app.package.path}/R$*.class ${project.app.package.path}/BuildConfig.class"/>
+                        </jar>
                         <dex-helper nolocals="false">
                             <path>
                                 <fileset dir="${out.dex.input.absolute.dir}" casesensitive="yes">
