@@ -775,6 +775,9 @@
             <!-- merge the project's own classpath and the tested project's classpath -->
             <path id="project.javac.classpath">
                 <path refid="project.all.jars.path" />
+                <path refid="project.all.jars.path2" />
+                <path refid="project.all.dex.jars.path" />
+                <!-- <path refid="project.all.dex.package.jars.path" /> -->
                 <path refid="tested.project.classpath" />
                 <path path="${java.compiler.classpath}" />
             </path>
