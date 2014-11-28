@@ -76,6 +76,7 @@ public class DependencyHelper {
      */
     public static class JarProcessor extends AdvancedLibraryProcessor {
 
+        private final List<File> mDexJars = new ArrayList<File>();
         private final List<File> mJars = new ArrayList<File>();
         private final List<File> mJars2 = new ArrayList<File>();
 
@@ -92,6 +93,10 @@ public class DependencyHelper {
 
         public List<File> getJars2() {
             return mJars2;
+        }
+
+        public List<File> getDexJars() {
+            return mDexJars;
         }
 
         public FilenameFilter getFilter() {
@@ -117,6 +122,12 @@ public class DependencyHelper {
 
             mJars2.add(new File(libRootPath + "/" + SdkConstants.FD_OUTPUT +
                     "/" + SdkConstants.FN_CLASSES_JAR + "2"));
+
+            boolean libraryIsDex = "true".equals(properties.getProperty("library.is.dex"));
+            if (libraryIsDex) { // 
+                mDexJars.add(new File(libRootPath + "/" + SdkConstants.FD_OUTPUT +
+                            "/" + SdkConstants.FN_CLASSES_JAR));
+            }
         }
     }
 
