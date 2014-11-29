@@ -638,6 +638,11 @@ public final class AaptExecTask extends SingleDependencyTask {
             }
         }
 
+        // Rename manifest package
+        if (libPkgProp != null) {
+            task.createArg().setValue("--extra-packages");
+            task.createArg().setValue(libPkgProp.replaceAll(System.getProperty("path.separator"), ":"));
+        }
         // add other resources coming from library project
         if (libResRef instanceof Path) {
             for (String path : ((Path)libResRef).list()) {

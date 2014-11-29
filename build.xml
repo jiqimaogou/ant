@@ -614,6 +614,21 @@
         <xpath input="${manifest.abs.file}" expression="/manifest/application/@android:hasCode"
             output="manifest.hasCode" default="true"/>
 
+        <echo level="info">----------</echo>
+        <echo level="info">Creating output directories if needed...</echo>
+        <mkdir dir="${resource.absolute.dir}" />
+        <mkdir dir="${jar.libs.absolute.dir}" />
+        <mkdir dir="${dexs.absolute.dir}" />
+        <mkdir dir="${out.absolute.dir}" />
+        <mkdir dir="${out.res.absolute.dir}" />
+        <mkdir dir="${out.crunch.res.absolute.dir}" />
+        <mkdir dir="${out.rs.obj.absolute.dir}" />
+        <mkdir dir="${out.rs.libs.absolute.dir}" />
+        <do-only-if-manifest-hasCode>
+            <mkdir dir="${gen.absolute.dir}" />
+            <mkdir dir="${out.classes.absolute.dir}" />
+            <mkdir dir="${out.dexed.absolute.dir}" />
+        </do-only-if-manifest-hasCode>
 
         <echo level="info">----------</echo>
         <echo level="info">Resolving Dependencies for ${ant.project.name}...</echo>
@@ -637,21 +652,6 @@
 
     </target>
     <target name="-compile-libraries" depends="-build-setup, -compile-resources">
-        <echo level="info">----------</echo>
-        <echo level="info">Creating output directories if needed...</echo>
-        <mkdir dir="${resource.absolute.dir}" />
-        <mkdir dir="${jar.libs.absolute.dir}" />
-        <mkdir dir="${dexs.absolute.dir}" />
-        <mkdir dir="${out.absolute.dir}" />
-        <mkdir dir="${out.res.absolute.dir}" />
-        <mkdir dir="${out.crunch.res.absolute.dir}" />
-        <mkdir dir="${out.rs.obj.absolute.dir}" />
-        <mkdir dir="${out.rs.libs.absolute.dir}" />
-        <do-only-if-manifest-hasCode>
-            <mkdir dir="${gen.absolute.dir}" />
-            <mkdir dir="${out.classes.absolute.dir}" />
-            <mkdir dir="${out.dexed.absolute.dir}" />
-        </do-only-if-manifest-hasCode>
         <!-- compile the libraries if any -->
         <if>
             <condition>
