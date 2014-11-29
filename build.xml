@@ -185,8 +185,8 @@
     <property name="out.absolute.dir" location="${out.dir}" />
     <property name="out.classes.absolute.dir" location="${out.dir}/classes" />
     <property name="out.res.absolute.dir" location="${out.dir}/res" />
-    <!-- <property name="out.crunch.res.absolute.dir" location="${out.dir}/res/crunch" /> -->
-    <property name="out.crunch.res.absolute.dir" location="${out.dir}/res" />
+    <property name="out.crunch.res.absolute.dir" location="${out.dir}/res/crunch" />
+    <!-- <property name="out.crunch.res.absolute.dir" location="${out.dir}/res" /> -->
     <property name="out.rs.obj.absolute.dir" location="${out.dir}/rsObj" />
     <property name="out.rs.libs.absolute.dir" location="${out.dir}/rsLibs" />
     <property name="out.aidl.absolute.dir" location="${out.dir}/aidl" />
@@ -719,17 +719,18 @@
 
     <!-- Code Generation: compile resources (aapt -> R.java), aidl, renderscript -->
     <target name="-compile-resources">
-        <!-- always merge manifest -->
-        <mergemanifest
+        <do-only-if-not-library elseText="Library project: do not convert bytecode..." >
+            <!-- always merge manifest -->
+            <mergemanifest
                 appManifest="${manifest.abs.file}"
                 outManifest="${out.manifest.abs.file}"
                 enabled="${manifestmerger.enabled}">
-            <library refid="project.library.manifest.file.path" />
-        </mergemanifest>
+                <library refid="project.library.manifest.file.path" />
+            </mergemanifest>
 
-        <echo level="info">----------</echo>
-        <echo level="info">Handling Resources...</echo>
-        <aapt executable="${aapt}"
+            <echo level="info">----------</echo>
+            <echo level="info">Handling Resources...</echo>
+            <aapt executable="${aapt}"
                 command="package"
                 verbose="${verbose}"
                 manifest="${out.manifest.abs.file}"
@@ -743,10 +744,11 @@
                 ignoreAssets="${aapt.ignore.assets}"
                 binFolder="${out.absolute.dir}"
                 proguardFile="${out.absolute.dir}/proguard.txt">
-            <res path="${out.crunch.res.absolute.dir}" />
-            <!-- <res path="${out.res.absolute.dir}" /> -->
-            <res path="${resource.absolute.dir}" />
-        </aapt>
+                <res path="${out.crunch.res.absolute.dir}" />
+                <!-- <res path="${out.res.absolute.dir}" /> -->
+                <res path="${resource.absolute.dir}" />
+            </aapt>
+        </do-only-if-not-library>
     </target>
 
     <target name="-code-gen">

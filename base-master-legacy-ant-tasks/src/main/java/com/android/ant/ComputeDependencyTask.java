@@ -199,7 +199,7 @@ public class ComputeDependencyTask extends GetLibraryPathTask {
                 // FIXME: support renamed folders.
                 element = resFolderPath.createPathElement();
                 element.setPath(libRootPath + '/' + SdkConstants.FD_OUTPUT +
-                        '/' + SdkConstants.FD_RES + "crunch");
+                        '/' + SdkConstants.FD_RES + '/' + "crunch");
                 element = resFolderPath.createPathElement();
                 element.setPath(libRootPath + '/' + SdkConstants.FD_RESOURCES);
 
