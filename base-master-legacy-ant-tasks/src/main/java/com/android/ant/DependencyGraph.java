@@ -162,10 +162,11 @@ public class DependencyGraph {
                 line = line.substring(0, line.length() - 1);
             }
             sb.append(line);
+            sb.append(" ");
         }
 
         // split the left and right part
-        String[] files = sb.toString().split(" : |: | :| ");
+        String[] files = sb.toString().split(" : |: | :");
 
         // get the target files:
         String[] targets = files[0].trim().split(" ");
