@@ -114,7 +114,7 @@ class MultiFilesTask extends BuildTypedTask {
 
                     // check if it needs to be recompiled.
                     if (hasBuildTypeChanged() ||
-                            graph.dependenciesHaveChanged(false /*printStatus*/)) {
+                            graph.dependenciesHaveChanged(true /*printStatus*/)) {
                         toCompile.put(sourceFilePath, sourceFolder);
                     }
                 }

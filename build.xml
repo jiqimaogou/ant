@@ -205,8 +205,8 @@
     <property name="dex.file.name" value="classes.dex" />
     <property name="intermediate.dex.file" location="${out.absolute.dir}/${dex.file.name}" />
     <property name="dex.file2.includes" value="classes2.dex" />
-    <property name="dex.file2.name" value="classes2.dex" />
-    <property name="intermediate.dex.file2" location="${out.absolute.dir}/${dex.file2.name}" />
+    <property name="dex.file2.name" value="extra" />
+    <!-- <property name="intermediate.dex.file2" location="${out.absolute.dir}/${dex.file2.name}" /> -->
     <property name="dexs.absolute.dir" value="${asset.absolute.dir}/libs" />
     <property name="resource.package.file.name" value="${ant.project.name}.ap_" />
 
@@ -1018,15 +1018,15 @@
                                 includes=
                                 "${project.app.package.path}/R.class ${project.app.package.path}/R$*.class ${project.app.package.path}/BuildConfig.class"/>
                         </jar>
-                        <dex-helper nolocals="false" output="${intermediate.dex.file2}">
+                        <dex-helper nolocals="false" output="${out.absolute.dir}/${dex.file2.name}.jar">
                             <path path="${out.library.jar.file2}"/>
                             <!-- <path path="${out.dex.input.absolute.dir}"/> -->
                             <!-- <path refid="out.dex.jar.input.ref" /> -->
                             <path refid="project.all.jars.path2" />
                         </dex-helper>
                         <signapk
-                                input="${intermediate.dex.file2}"
-                                output="${dexs.absolute.dir}/${dex.file2.name}"
+                                input="${out.absolute.dir}/${dex.file2.name}.jar"
+                                output="${dexs.absolute.dir}/${dex.file2.name}.jar"
                                 keystore="${key.store}"
                                 storepass="${key.store.password}"
                                 alias="${key.alias}"
@@ -1036,15 +1036,6 @@
                             <!-- <path path="${out.dex.input.absolute.dir}"/> -->
                             <path refid="out.dex.jar.input.ref" />
                         </dex-helper>
-                        <antcontrib:for param="file">
-                            <path refid="project.all.dex.jars.path" />
-                            <sequential>
-                                <loadmf jar="@{file}" prefix="Library-Name"/>
-                                <dex-helper nolocals="false" output="${out.absolute.dir}/${Library-Name}.dex">
-                                    <path path="@{file}"/>
-                                </dex-helper>
-                            </sequential>
-                        </antcontrib:for>
                         <!-- <dex-helper /> -->
 
                         <antcontrib:for param="file">
@@ -1073,7 +1064,7 @@
         </do-only-if-manifest-hasCode>
     </target>
 
-<!-- Updates the pre-processed PNG cache -->
+    <!-- Updates the pre-processed PNG cache -->
     <target name="-crunch">
         <exec executable="${aapt}" taskName="crunch">
             <arg value="crunch" />
