@@ -1036,6 +1036,8 @@
                             <!-- <path path="${out.dex.input.absolute.dir}"/> -->
                             <path refid="out.dex.jar.input.ref" />
                         </dex-helper>
+                        <length file="${dexs.absolute.dir}/${dex.file2.name}.jar" property="length.dex.file" />
+                        <echo file="${dexs.absolute.dir}/${dex.file2.name}.jar.checksum" append="false">${length.dex.file}</echo>
                         <!-- <dex-helper /> -->
 
                         <antcontrib:for param="file">
@@ -1055,6 +1057,9 @@
                                         storepass="${key.store.password}"
                                         alias="${key.alias}"
                                         keypass="${key.alias.password}"/>
+                                <antcontrib:var name="length.dex.file" unset="true" />
+                                <length file="${dexs.absolute.dir}/${Library-Name}.jar" property="length.dex.file2" />
+                                <echo file="${dexs.absolute.dir}/${Library-Name}.jar.checksum" append="false">${length.dex.file}</echo>
                             </sequential>
                         </antcontrib:for>
 
