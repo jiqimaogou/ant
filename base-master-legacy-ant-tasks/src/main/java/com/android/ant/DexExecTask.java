@@ -140,8 +140,10 @@ public class DexExecTask extends SingleDependencyTask {
                 File dexedLib = new File(mDexedLibs, fileName);
                 String dexedLibPath = dexedLib.getAbsolutePath();
 
+                /* if (dexedLib.isFile() == false ||
+                        dexedLib.lastModified() < input.lastModified()) { */
                 if (dexedLib.isFile() == false ||
-                        dexedLib.lastModified() < input.lastModified()) {
+                        !dexedLib.exists()) {
 
                     System.out.println(
                             String.format("Pre-Dexing %1$s -> %2$s",

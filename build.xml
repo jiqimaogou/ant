@@ -875,7 +875,7 @@
                     <jar destfile="${out.library.jar.file}">
                         <fileset dir="${out.classes.absolute.dir}"
                                 includes="**/*.class"
-                                excludes="${project.app.package.path}/R.class ${project.app.package.path}/R$*.class ${project.app.package.path}/BuildConfig.class ${dex.file2.includes}"/>
+                                excludes="${project.app.package.path}/R.class ${project.app.package.path}/R$*.class ${project.app.package.path}/BuildConfig.class ${project.app.package.path}/Manifest$*.class ${project.app.package.path}/Manifest.class ${dex.file2.includes}"/>
                         <!-- <fileset dir="${source.absolute.dir}" excludes="**/*.java ${android.package.excludes}" /> -->
                         <zipgroupfileset dir="${jar.libs.absolute.dir}" includes="${dex.jars.package.includes}" />
 
