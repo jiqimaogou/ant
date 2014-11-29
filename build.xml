@@ -1030,8 +1030,13 @@
                 </proguard>
                 <antcontrib:var name="out.library.jar.file" unset="true" />
                 <property name="out.library.jar.file" location="${obfuscated.jar.file}" />
+
                 <antcontrib:var name="out.library.jar.file2" unset="true" />
                 <property name="out.library.jar.file2" location="${obfuscated.jar.file2}" />
+                <script language="javascript"> <![CDATA[
+                    self.getProject().addReference("project.all.jars.path", new Path(self.getProject()));
+                    self.getProject().addReference("project.all.jars.path2", new Path(self.getProject()));
+                    ]]></script>
             </then>
         </if>
     </target>
