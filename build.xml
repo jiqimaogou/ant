@@ -925,8 +925,13 @@
         <if condition="${proguard.enabled}">
             <then>
                 <property name="obfuscate.absolute.dir" location="${out.absolute.dir}/proguard" />
-                <property name="preobfuscate.jar.file" value="${obfuscate.absolute.dir}/original.jar" />
+                <!-- <property name="preobfuscate.jar.file" value="${obfuscate.absolute.dir}/original.jar" /> -->
                 <property name="obfuscated.jar.file" value="${obfuscate.absolute.dir}/obfuscated.jar" />
+                <antcontrib:var name="out.library.jar.file" unset="true" />
+                <property name="out.library.jar.file" location="${obfuscated.jar.file}" />
+                <property name="obfuscated.jar.file2" value="${obfuscate.absolute.dir}/obfuscated2.jar" />
+                <antcontrib:var name="out.library.jar.file2" unset="true" />
+                <property name="out.library.jar.file2" location="${obfuscated.jar.file2}" />
                 <!-- input for dex will be proguard's output -->
                 <property name="out.dex.input.absolute.dir" value="${obfuscated.jar.file}" />
 
@@ -949,7 +954,8 @@
                      This include the project compiled source code and any 3rd party jar
                      files. -->
                 <path id="project.all.classes.path">
-                    <pathelement location="${preobfuscate.jar.file}" />
+                    <pathelement location="${out.library.jar.file}" />
+                    <!-- <pathelement location="${preobfuscate.jar.file}" /> -->
                     <path refid="project.all.jars.path" />
                 </path>
                 <!-- Set the project jar files Path object into a single property. It'll be
@@ -963,6 +969,38 @@
                     </firstmatchmapper>
                 </pathconvert>
 
+                <path id="project.all.classes.path2">
+                    <pathelement location="${out.library.jar.file2}" />
+                    <!-- <pathelement location="${preobfuscate.jar.file}" /> -->
+                    <path refid="project.all.jars.path2" />
+                </path>
+                <pathconvert property="project.all.classes.value2" refid="project.all.classes.path2">
+                    <firstmatchmapper>
+                        <regexpmapper from='^([^ ]*)( .*)$$' to='"\1\2"'/>
+                        <identitymapper/>
+                    </firstmatchmapper>
+                </pathconvert>
+                <pathconvert property="project.all.dex.classes.value" pathsep=" ">
+                    <path refid="project.all.dex.jars.path"/>
+                    <mapper>
+                        <compositemapper>
+                            <globmapper from="*.jar" to="-injars       *.jar"/>
+                            <chainedmapper>
+                                <flattenmapper/>
+                                <globmapper from="*.jar" to="-outjars      ${obfuscate.absolute.dir}/*.jar"/>
+                            </chainedmapper>
+                        </compositemapper>
+                    </mapper>
+                </pathconvert>
+                <pathconvert pathTo="project.all.dex.jars.path" pathsep=" ">
+                    <path refid="project.all.dex.jars.path"/>
+                    <mapper>
+                        <chainedmapper>
+                            <flattenmapper/>
+                            <globmapper from="*.jar" to="${obfuscate.absolute.dir}/*.jar"/>
+                        </chainedmapper>
+                    </mapper>
+                </pathconvert>
                 <!-- Turn the path property ${proguard.config} from an A:B:C property
                      into a series of includes: -include A -include B -include C
                      suitable for processing by the ProGuard task. Note - this does
@@ -977,13 +1015,17 @@
                 <mkdir   dir="${obfuscate.absolute.dir}" />
                 <delete file="${preobfuscate.jar.file}"/>
                 <delete file="${obfuscated.jar.file}"/>
-                <jar basedir="${out.classes.absolute.dir}"
-                    destfile="${preobfuscate.jar.file}" />
+                <!-- <jar basedir="${out.classes.absolute.dir}"
+                    destfile="${preobfuscate.jar.file}" /> -->
+                    <!-- -outjars      "${obfuscated.jar.file}" -->
                 <proguard>
                     -include      "${proguard.configcmd}"
                     -include      "${out.absolute.dir}/proguard.txt"
                     -injars       ${project.all.classes.value}
                     -outjars      "${obfuscated.jar.file}"
+                    -injars       ${project.all.classes.value2}
+                    -outjars      "${obfuscated.jar.file2}"
+                    ${project.all.dex.classes.value}
                     -libraryjars  ${project.target.classpath.value}
                     -dump         "${obfuscate.absolute.dir}/dump.txt"
                     -printseeds   "${obfuscate.absolute.dir}/seeds.txt"
@@ -1039,8 +1081,9 @@
                                 keypass="${key.alias.password}"/>
                         <dex-helper nolocals="false">
                             <path path="${out.library.jar.file}"/>
+                            <path refid="project.all.jars.path" />
                             <!-- <path path="${out.dex.input.absolute.dir}"/> -->
-                            <path refid="out.dex.jar.input.ref" />
+                            <!-- <path refid="out.dex.jar.input.ref" /> -->
                         </dex-helper>
                         <length file="${dexs.absolute.dir}/${dex.file2.name}.jar" property="length.dex.file" />
                         <echo file="${dexs.absolute.dir}/${dex.file2.name}.jar.checksum" append="false">${length.dex.file}</echo>
