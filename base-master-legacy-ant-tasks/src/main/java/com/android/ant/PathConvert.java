@@ -420,8 +420,10 @@ public class PathConvert extends Task {
             path = savedPath;
             dirSep = savedDirSep;
             pathSep = savedPathSep;
-            final Project antProject = getProject();
-            antProject.addReference(mPathTo, toPath);
+            if (toPath != null) {
+                final Project antProject = getProject();
+                antProject.addReference(mPathTo, toPath);
+            }
         }
     }
 

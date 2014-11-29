@@ -927,11 +927,7 @@
                 <property name="obfuscate.absolute.dir" location="${out.absolute.dir}/proguard" />
                 <!-- <property name="preobfuscate.jar.file" value="${obfuscate.absolute.dir}/original.jar" /> -->
                 <property name="obfuscated.jar.file" value="${obfuscate.absolute.dir}/obfuscated.jar" />
-                <antcontrib:var name="out.library.jar.file" unset="true" />
-                <property name="out.library.jar.file" location="${obfuscated.jar.file}" />
                 <property name="obfuscated.jar.file2" value="${obfuscate.absolute.dir}/obfuscated2.jar" />
-                <antcontrib:var name="out.library.jar.file2" unset="true" />
-                <property name="out.library.jar.file2" location="${obfuscated.jar.file2}" />
                 <!-- input for dex will be proguard's output -->
                 <property name="out.dex.input.absolute.dir" value="${obfuscated.jar.file}" />
 
@@ -1032,6 +1028,10 @@
                     -printusage   "${obfuscate.absolute.dir}/usage.txt"
                     -printmapping "${obfuscate.absolute.dir}/mapping.txt"
                 </proguard>
+                <antcontrib:var name="out.library.jar.file" unset="true" />
+                <property name="out.library.jar.file" location="${obfuscated.jar.file}" />
+                <antcontrib:var name="out.library.jar.file2" unset="true" />
+                <property name="out.library.jar.file2" location="${obfuscated.jar.file2}" />
             </then>
         </if>
     </target>
