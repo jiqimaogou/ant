@@ -883,6 +883,10 @@
                             <attribute name="Library-Name" value="${ant.project.name}" />
                         </manifest>
                     </jar>
+                    <jar destfile="${out.library.jar.file}" update="true">
+                        <fileset dir="${out.classes.absolute.dir}"
+                                includes="${project.app.package.path}/R$styleable.class"/>
+                    </jar>
                     <jar destfile="${out.library.jar.file2}">
                         <fileset dir="${out.classes.absolute.dir}"
                                 includes="${dex.file2.includes}"
@@ -1013,7 +1017,7 @@
                         </dex-helper>
                     </then>
                     <else>
-                        <jar destfile="${out.library.jar.file}">
+                        <jar destfile="${out.library.jar.file}" update="true">
                             <fileset dir="${out.classes.absolute.dir}"
                                 includes=
                                 "${project.app.package.path}/R.class ${project.app.package.path}/R$*.class ${project.app.package.path}/BuildConfig.class"/>
