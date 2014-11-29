@@ -37,6 +37,7 @@
          Overriding any other properties may result in broken build. -->
 
     <!-- 腾讯自定义 -->
+    <property name="root.dir" value="${basedir}" />
 
     <!-- apk文件名 --> <!-- qzone_4.9.8.160_android_r80200_20141121145422_debug -->
     <!-- 版本号4.9.8.160 -->
@@ -678,6 +679,7 @@
                     <target name="nodeps" />
                     <target name="${project.libraries.target}" />
                     <property name="emma.coverage.absolute.file" location="${out.absolute.dir}/coverage.em" />
+                    <property name="root.dir" value="${root.dir}" />
                 </subant>
             </then>
         </if>
@@ -806,6 +808,9 @@
                 <path refid="tested.project.classpath" />
                 <path path="${java.compiler.classpath}" />
             </path>
+
+                    <propertybyreplace name="project.app.package.path" input="${project.app.package}" replace="." with="/" />
+
             <javac encoding="${java.encoding}"
                     source="${java.source}" target="${java.target}"
                     debug="true" extdirs="" includeantruntime="false"
@@ -816,6 +821,8 @@
                     fork="${need.javac.fork}">
                 <src path="${source.absolute.dir}" />
                 <src path="${gen.absolute.dir}" />
+                <exclude name="**/R.java" />
+                <compilerarg line="${root.dir}/gen/${project.app.package.path}/R.java" />
                 <compilerarg line="${java.compilerargs}" />
             </javac>
 
