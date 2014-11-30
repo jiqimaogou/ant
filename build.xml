@@ -558,7 +558,9 @@
         <property name="aidl" location="${android.build.tools.dir}/aidl${exe}" />
         <property name="aapt" location="${android.build.tools.dir}/aapt${exe}" />
         <property name="dx" location="${android.build.tools.dir}/dx${bat}" />
-        <property name="zipalign" location="${android.build.tools.dir}/zipalign${exe}" />
+        <!-- <property name="zipalign" location="${android.build.tools.dir}/zipalign${exe}" /> -->
+        <!-- 腾讯自定义 -->
+        <get-tool property="zipalign" tool="zipalign" />
 
         <!-- read the previous build mode -->
         <property file="${out.build.prop.file}" />
@@ -1407,7 +1409,7 @@
                 <echo level="info">Release Package: ${out.final.file}</echo>
             </sequential>
         </do-only-if-not-library>
-        <record-build-info />
+        <!-- <record-build-info /> -->
     </target>
 
     <!-- This runs -package-release and -release-nosign first and then runs
@@ -1416,6 +1418,7 @@
     <target name="release"
                 depends="-set-release-mode, -release-obfuscation-check, -dex, -package, -post-package, -release-prompt-for-password, -release-nosign, -release-sign, packageQuaApk, -post-build, -mkstubs"
                 description="Builds the application in release mode.">
+        <record-build-info />
     </target>
 
     <target name="-mkstubs">
@@ -1507,6 +1510,27 @@
         </sequential>
     </macrodef>
 
+    <macrodef name="get-tool">
+        <attribute name="property" />
+        <attribute name="tool" />
+        <sequential>
+            <antcontrib:if>
+                <available file="${android.build.tools.dir}/@{tool}${exe}"/>
+                <antcontrib:then>
+                    <property name="@{property}" location="${android.build.tools.dir}/@{tool}${exe}" />
+                </antcontrib:then>
+                <antcontrib:elseif>
+                    <available file="${android.platform.tools.dir}/@{tool}${exe}"/>
+                    <antcontrib:then>
+                        <property name="@{property}" location="${android.platform.tools.dir}/@{tool}${exe}" />
+                    </antcontrib:then>
+                </antcontrib:elseif>
+                <antcontrib:else>
+                    <property name="@{property}" location="${android.tools.dir}/@{tool}${exe}" />
+                </antcontrib:else>
+            </antcontrib:if>
+        </sequential>
+    </macrodef>
     <!-- ******************************************************* -->
     <!-- ************ Instrumented specific targets ************ -->
     <!-- ******************************************************* -->

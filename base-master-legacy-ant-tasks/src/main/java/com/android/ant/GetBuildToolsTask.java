@@ -76,11 +76,11 @@ public class GetBuildToolsTask extends Task {
             System.out.println("Using latest Build Tools: " + buildToolInfo.getRevision());
         }
 
-        if (buildToolInfo.getRevision().compareTo(MIN_BUILD_TOOLS_REV) < 0) {
+        /* if (buildToolInfo.getRevision().compareTo(MIN_BUILD_TOOLS_REV) < 0) {
             throw new BuildException(String.format(
                     "The SDK Build Tools revision (%1$s) is too low for project '%2$s'. Minimum required is %3$s",
                     buildToolInfo.getRevision(), getProject().getName(), MIN_BUILD_TOOLS_REV));
-        }
+        } */
 
         antProject.setProperty(mName, buildToolInfo.getLocation().getAbsolutePath());
     }
