@@ -1380,6 +1380,15 @@
             <sequential>
                 <property name="out.unaligned.file" location="${out.absolute.dir}/${ant.project.name}-release-unaligned.apk" />
 
+                <antcontrib:if>
+                    <isset property="qua"/>
+                    <then>
+                        <replaceQUA apk="${out.unaligned.file}" qua="${qua}" quaFile="${default_qua_file}" />
+                    </then>
+                    <else> <!-- </else> -->
+                    <property name="qua" value="" />
+                    </else>
+                </antcontrib:if>
                 <!-- Signs the APK -->
                 <echo level="info">Signing final apk...</echo>
                 <signapk
@@ -1393,8 +1402,8 @@
                 <!-- Zip aligns the APK -->
                 <zipalign-helper
                         in.package="${out.unaligned.file}"
-                        out.package="${out.final.file}" />
-                <echo level="info">Release Package: ${out.final.file}</echo>
+                        out.package="${out.final.file.name}_${qua}.apk" />
+                <echo level="info">Release Package: ${out.final.file.name}_${qua}.apk</echo>
             </sequential>
         </do-only-if-not-library>
         <record-build-info />
@@ -1404,7 +1413,7 @@
          only if release-sign is true (set in -release-check,
          called by -release-no-sign)-->
     <target name="release"
-                depends="-set-release-mode, -release-obfuscation-check, -dex, -package, -post-package, -release-prompt-for-password, -release-nosign, -release-sign, -post-build, -mkstubs"
+                depends="-set-release-mode, -release-obfuscation-check, -dex, -package, -post-package, -release-prompt-for-password, -release-nosign, -release-sign, packageQuaApk, -post-build, -mkstubs"
                 description="Builds the application in release mode.">
     </target>
 
@@ -1445,6 +1454,57 @@
         </sequential>
     </macrodef>
 
+    <!-- 修改QUA -->
+    <!-- qua -->
+    <target name="packageQuaApk" if="need_qua">
+        <property name="env.QUA" value="ALPHA_L,HDBM_T,YYB_D" />
+        <antcontrib:for list="${env.QUA}" param="currQUA" delimiter=",">
+            <sequential>
+                <antcall target="-release-sign">
+                    <param name="qua" value="@{currQUA}" />
+                </antcall>
+            </sequential>
+        </antcontrib:for>
+    </target>
+
+    <property name="need_qua" value="true" />
+    <condition property="need_qua" value="true">
+        <isset property="env.need_qua" />
+    </condition>
+    <property name="default_qua" value="RDM_T" />
+    <property name="default_qua_file" value="assets/qua.ini" />
+
+    <macrodef name="replaceQUA">
+        <attribute name="apk" />
+        <attribute name="quaFile" default="${default_qua_file}" />
+        <attribute name="qua" default="${default_qua}" />
+        <sequential>
+            <echo>/Replace QUA as @{qua}.../</echo>
+
+            <local name="tmpDir" />
+            <local name="tmpBaseDir" />
+            <local name="tmpFile" />
+            <property name="tmpDir" value="tmp_@{qua}" />
+            <property name="tmpFile" value="${tmpDir}/@{quaFile}" />
+            <dirname property="tmpBaseDir" file="${tmpFile}" />
+
+            <mkdir dir="${tmpBaseDir}" />
+            <echo file="${tmpFile}" message="qua=@{qua}" />
+
+            <exec executable="${aapt}" failonerror="true">
+                <arg value="r" />
+                <arg value="@{apk}" />
+                <arg value="@{quaFile}" />
+            </exec>
+            <exec executable="${aapt}" failonerror="true" dir="${tmpDir}">
+                <arg value="a" />
+                <arg value="@{apk}" />
+                <arg value="@{quaFile}" />
+            </exec>
+
+            <delete dir="${tmpDir}" />
+        </sequential>
+    </macrodef>
 
     <!-- ******************************************************* -->
     <!-- ************ Instrumented specific targets ************ -->
