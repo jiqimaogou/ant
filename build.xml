@@ -508,6 +508,7 @@
     <!-- clean target -->
     <target name="clean" depends="-setup, -pre-clean"
             description="Removes output files created by other targets.">
+        <delete dir="${dexs.absolute.dir}" verbose="${verbose}" />
         <delete dir="${out.absolute.dir}" verbose="${verbose}" />
         <delete dir="${gen.absolute.dir}" verbose="${verbose}" />
 
@@ -861,7 +862,7 @@
             <!-- <if condition="${project.is.library}"> -->
                 <!-- <then> -->
                     <echo level="info">Creating library output jar file...</echo>
-                    <property name="out.library.jar.file" location="${out.absolute.dir}/classes.jar" />
+                    <property name="out.library.jar.file" location="${out.absolute.dir}/${ant.project.name}.jar" />
                     <property name="out.library.jar.file2" location="${out.absolute.dir}/classes2.jar" />
                     <if>
                         <condition>
@@ -880,10 +881,6 @@
                                 excludes="${project.app.package.path}/R.class ${project.app.package.path}/R$*.class ${project.app.package.path}/BuildConfig.class ${project.app.package.path}/Manifest$*.class ${project.app.package.path}/Manifest.class ${dex.file2.includes}"/>
                         <!-- <fileset dir="${source.absolute.dir}" excludes="**/*.java ${android.package.excludes}" /> -->
                         <zipgroupfileset dir="${jar.libs.absolute.dir}" includes="${dex.jars.package.includes}" />
-
-                        <manifest>
-                            <attribute name="Library-Name" value="${ant.project.name}" />
-                        </manifest>
                     </jar>
                     <jar destfile="${out.library.jar.file}" update="true">
                         <fileset dir="${out.classes.absolute.dir}"
@@ -1034,6 +1031,8 @@
                 <antcontrib:var name="out.library.jar.file2" unset="true" />
                 <property name="out.library.jar.file2" location="${obfuscated.jar.file2}" />
                 <script language="javascript"> <![CDATA[
+                    load("nashorn:mozilla_compat.js");
+                    importClass(org.apache.tools.ant.types.Path);
                     self.getProject().addReference("project.all.jars.path", new Path(self.getProject()));
                     self.getProject().addReference("project.all.jars.path2", new Path(self.getProject()));
                     ]]></script>
@@ -1097,23 +1096,21 @@
                         <antcontrib:for param="file">
                             <path refid="project.all.dex.jars.path"/>
                             <sequential>
-                                <loadproperties>
-                                    <!-- Load the manifest entries -->
-                                    <zipentry zipfile="@{file}" name="META-INF/MANIFEST.MF"/>
-                                </loadproperties>
-                                <dex-helper nolocals="false" output="${out.absolute.dir}/${Library-Name}.jar">
+                                <antcontrib:var name="basename" unset="true" />
+                                <basename file="@{file}" property="basename" suffix=".jar" />
+                                <dex-helper nolocals="false" output="${out.absolute.dir}/${basename}.jar">
                                     <path path="@{file}"/>
                                 </dex-helper>
                                 <signapk
-                                        input="${out.absolute.dir}/${Library-Name}.jar"
-                                        output="${dexs.absolute.dir}/${Library-Name}.jar"
+                                        input="${out.absolute.dir}/${basename}.jar"
+                                        output="${dexs.absolute.dir}/${basename}.jar"
                                         keystore="${key.store}"
                                         storepass="${key.store.password}"
                                         alias="${key.alias}"
                                         keypass="${key.alias.password}"/>
                                 <antcontrib:var name="length.dex.file" unset="true" />
-                                <length file="${dexs.absolute.dir}/${Library-Name}.jar" property="length.dex.file2" />
-                                <echo file="${dexs.absolute.dir}/${Library-Name}.jar.checksum" append="false">${length.dex.file}</echo>
+                                <length file="${dexs.absolute.dir}/${basename}.jar" property="length.dex.file2" />
+                                <echo file="${dexs.absolute.dir}/${basename}.jar.checksum" append="false">${length.dex.file}</echo>
                             </sequential>
                         </antcontrib:for>
 

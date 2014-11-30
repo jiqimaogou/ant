@@ -25,8 +25,11 @@ import com.android.sdklib.build.JarListSanitizer.Sha1Exception;
 import com.android.sdklib.internal.project.IPropertySource;
 import com.android.sdklib.internal.project.ProjectProperties;
 import com.android.sdklib.internal.project.ProjectProperties.PropertyType;
+import com.android.xml.AndroidXPathFactory;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Main;
+import org.xml.sax.InputSource;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -35,6 +38,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
 /**
  * Helper class to manage dependency for projects.
  *
@@ -112,8 +121,18 @@ public class DependencyHelper {
         public void processLibrary(String libRootPath, IPropertySource properties) {
             // get the library output
             // FIXME: support renamed folder.
-            mJars.add(new File(libRootPath + "/" + SdkConstants.FD_OUTPUT +
-                    "/" + SdkConstants.FN_CLASSES_JAR));
+            try {
+                XPath xpath = AndroidXPathFactory.newXPath();
+                String result = xpath.evaluate("/project/@name", new InputSource(new FileInputStream(libRootPath + "/" + Main.DEFAULT_BUILD_FILENAME)));
+                /* mJars.add(new File(libRootPath + "/" + SdkConstants.FD_OUTPUT +
+                            "/" + SdkConstants.FN_CLASSES_JAR)); */
+                mJars.add(new File(libRootPath + "/" + SdkConstants.FD_OUTPUT +
+                            "/" + result + ".jar"));
+            } catch (XPathExpressionException e) {
+                throw new BuildException(e);
+            } catch (FileNotFoundException e) {
+                throw new BuildException(e);
+            }
 
             // Get the 3rd party jar files.
             // FIXME: support renamed folder.
