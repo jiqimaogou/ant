@@ -192,6 +192,9 @@
     <property name="out.aidl.absolute.dir" location="${out.dir}/aidl" />
     <property name="out.dexed.absolute.dir" location="${out.dir}/dexedLibs" />
     <property name="out.manifest.abs.file" location="${out.dir}/AndroidManifest.xml" />
+    <xpath input="${manifest.abs.file}"
+        expression="/manifest/@android:versionName" output="version.name" />
+
 
     <!-- tools location -->
     <property name="android.tools.dir" location="${sdk.dir}/tools" />
@@ -1226,9 +1229,6 @@
     <!-- ******************************************************* -->
 
     <target name="-set-debug-files" depends="-set-mode-check">
-        <xpath input="${manifest.abs.file}"
-            expression="/manifest/@android:versionName" output="version.name" />
-
         <property name="out.packaged.file" location="${out.absolute.dir}/${ant.project.name}-debug-unaligned.apk" />
         <property name="out.final.file.name" location="${out.absolute.dir}/${ant.project.name}_${version.name}_android_r${svn.version}_${build.date}_debug" />
         <property name="out.final.file" location="${out.final.file.name}.apk" />
@@ -1272,14 +1272,14 @@
     </target>
 
     <!-- Builds debug output package -->
-    <target name="-do-debug" depends="-set-debug-mode, -debug-obfuscation-check, -dex, -package, -post-package, -release-sign">
+    <target name="-do-debug" depends="-set-debug-mode, -debug-obfuscation-check, -dex, -package, -post-package">
         <!-- only create apk if *not* a library project -->
-        <!-- <do-only-if-not-library elseText="Library project: do not create apk..." >
+        <do-only-if-not-library elseText="Library project: do not create apk..." >
             <sequential>
                 <zipalign-helper in.package="${out.packaged.file}" out.package="${out.final.file}" />
                 <echo level="info">Debug Package: ${out.final.file}</echo>
             </sequential>
-        </do-only-if-not-library> -->
+        </do-only-if-not-library>
         <record-build-info />
     </target>
 
