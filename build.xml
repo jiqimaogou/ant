@@ -1384,11 +1384,12 @@
                     <isset property="qua"/>
                     <then>
                         <replaceQUA apk="${out.unaligned.file}" qua="${qua}" quaFile="${default_qua_file}" />
+                        <antcontrib:var name="out.final.file" unset="true" />
+                        <property name="out.final.file" location="${out.final.file.name}_${qua}.apk" />
                     </then>
-                    <else> <!-- </else> -->
-                    <property name="qua" value="" />
-                    </else>
+                    <!-- <else> --> <!-- </else> -->
                 </antcontrib:if>
+
                 <!-- Signs the APK -->
                 <echo level="info">Signing final apk...</echo>
                 <signapk
@@ -1402,8 +1403,8 @@
                 <!-- Zip aligns the APK -->
                 <zipalign-helper
                         in.package="${out.unaligned.file}"
-                        out.package="${out.final.file.name}_${qua}.apk" />
-                <echo level="info">Release Package: ${out.final.file.name}_${qua}.apk</echo>
+                        out.package="${out.final.file}" />
+                <echo level="info">Release Package: ${out.final.file}</echo>
             </sequential>
         </do-only-if-not-library>
         <record-build-info />
