@@ -128,6 +128,12 @@ public class DependencyHelper {
                             "/" + SdkConstants.FN_CLASSES_JAR)); */
                 mJars.add(new File(libRootPath + "/" + SdkConstants.FD_OUTPUT +
                             "/" + result + ".jar"));
+
+                boolean libraryIsDex = "true".equals(properties.getProperty("library.is.dex"));
+                if (libraryIsDex) { // 
+                    mDexJars.add(new File(libRootPath + "/" + SdkConstants.FD_OUTPUT +
+                                "/" + result + ".jar"));
+                }
             } catch (XPathExpressionException e) {
                 throw new BuildException(e);
             } catch (FileNotFoundException e) {
@@ -144,12 +150,6 @@ public class DependencyHelper {
                 }
             }
 
-
-            boolean libraryIsDex = "true".equals(properties.getProperty("library.is.dex"));
-            if (libraryIsDex) { // 
-                mDexJars.add(new File(libRootPath + "/" + SdkConstants.FD_OUTPUT +
-                            "/" + SdkConstants.FN_CLASSES_JAR));
-            }
 
             if (jarFiles != null) {
                 String includes2 = properties.getProperty("dex.file2.includes");
