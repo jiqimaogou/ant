@@ -1207,6 +1207,27 @@
     <!-- **************** Debug specific targets *************** -->
     <!-- ******************************************************* -->
 
+    <target name="-set-debug-test-files" depends="-set-mode-check">
+        <xpath input="${manifest.abs.file}"
+            expression="/manifest/@android:versionName" output="version.name" />
+
+        <property name="out.packaged.file" location="${out.absolute.dir}/${ant.project.name}-debug-test-unaligned.apk" />
+        <property name="out.final.file.name" location="${out.absolute.dir}/${ant.project.name}_${version.name}_android_r${svn.version}_${build.date}_debug_test" />
+        <property name="out.final.file" location="${out.final.file.name}.apk" />
+        <property name="build.is.mode.set" value="true" />
+        <!-- record the current build target -->
+        <property name="build.target" value="debug-test" />
+
+        <property name="proguard.enabled" value="true"/>
+    </target>
+
+    <target name="debug-test" depends="-set-debug-test-files, debug"
+                description="Builds the application and signs it with a debug key.">
+    </target>
+    <!-- ******************************************************* -->
+    <!-- **************** Debug specific targets *************** -->
+    <!-- ******************************************************* -->
+
     <target name="-set-debug-files" depends="-set-mode-check">
         <xpath input="${manifest.abs.file}"
             expression="/manifest/@android:versionName" output="version.name" />
@@ -1254,14 +1275,14 @@
     </target>
 
     <!-- Builds debug output package -->
-    <target name="-do-debug" depends="-set-debug-mode, -debug-obfuscation-check, -dex, -package, -post-package">
+    <target name="-do-debug" depends="-set-debug-mode, -debug-obfuscation-check, -dex, -package, -post-package, -release-sign">
         <!-- only create apk if *not* a library project -->
-        <do-only-if-not-library elseText="Library project: do not create apk..." >
+        <!-- <do-only-if-not-library elseText="Library project: do not create apk..." >
             <sequential>
                 <zipalign-helper in.package="${out.packaged.file}" out.package="${out.final.file}" />
                 <echo level="info">Debug Package: ${out.final.file}</echo>
             </sequential>
-        </do-only-if-not-library>
+        </do-only-if-not-library> -->
         <record-build-info />
     </target>
 
