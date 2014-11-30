@@ -1217,11 +1217,9 @@
         <property name="build.is.mode.set" value="true" />
         <!-- record the current build target -->
         <property name="build.target" value="debug-test" />
-
-        <property name="proguard.enabled" value="true"/>
     </target>
 
-    <target name="debug-test" depends="-set-debug-test-files, debug"
+    <target name="debug-test" depends="-release-obfuscation-check, -set-debug-test-files, debug"
                 description="Builds the application and signs it with a debug key.">
     </target>
     <!-- ******************************************************* -->
@@ -1323,7 +1321,7 @@
         <echo level="info">proguard.config is ${proguard.config}</echo>
         <condition property="proguard.enabled" value="true" else="false">
             <and>
-                <isset property="build.is.mode.release" />
+                <!-- <isset property="build.is.mode.release" /> -->
                 <isset property="proguard.config" />
             </and>
         </condition>
