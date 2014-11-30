@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="android_rules" default="debug" xmlns:antcontrib="antlib:net.sf.antcontrib">
-    <property name="ant-contrib.jar" value="${sdk.dir}/tools/lib/ant-contrib-1.0b3.jar"/>
+    <property name="ant-contrib.jar" value="${svn.info.entry.wc-info.wcroot-abspath}\qzone\build\sdk/tools/lib/ant-contrib-1.0b3.jar"/>
 
     <taskdef resource="net/sf/antcontrib/antlib.xml" 
         classpath="${ant-contrib.jar}"
@@ -144,7 +144,7 @@
 
     <!-- jar file from where the tasks are loaded -->
     <path id="android.antlibs">
-        <pathelement path="${sdk.dir}/tools/lib/ant-tasks.jar" />
+        <pathelement path="${svn.info.entry.wc-info.wcroot-abspath}\qzone\build\sdk/tools/lib/ant-tasks.jar" />
     </path>
 
     <!-- Custom tasks -->
@@ -1337,8 +1337,9 @@
 
     <target name="-set-release-mode" depends="-set-mode-check">
         <property name="out.packaged.file" location="${out.absolute.dir}/${ant.project.name}-release-unsigned.apk" />
-        <property name="out.final.file.name" location="${out.absolute.dir}/${ant.project.name}_${version.name}_android_r${svn.version}_${build.date}_release.apk" />
+        <property name="out.final.file.name" location="${out.absolute.dir}/${ant.project.name}_${version.name}_android_r${svn.version}_${build.date}_release" />
         <property name="out.final.file" location="${out.final.file.name}.apk" />
+        <property name="out.final.jar" location="${out.final.file.name}.jar" />
         <property name="build.is.mode.set" value="true" />
 
         <!-- record the current build target -->
@@ -1403,9 +1404,47 @@
          only if release-sign is true (set in -release-check,
          called by -release-no-sign)-->
     <target name="release"
-                depends="-set-release-mode, -release-obfuscation-check, -dex, -package, -post-package, -release-prompt-for-password, -release-nosign, -release-sign, -post-build"
+                depends="-set-release-mode, -release-obfuscation-check, -dex, -package, -post-package, -release-prompt-for-password, -release-nosign, -release-sign, -post-build, -mkstubs"
                 description="Builds the application in release mode.">
     </target>
+
+    <target name="-mkstubs">
+        <do-only-if-not-library elseText="Library project: do not mkstubs..." >
+            <antcontrib:for param="file">
+                <path refid="project.library.folder.path" /> 
+                <path path="${basedir}" />
+                <sequential>
+                    <jar destfile="${out.final.jar}.tmp" update="true">
+                        <fileset dir="@{file}/${out.dir}/classes">
+                            <include name="**/*.class" />
+                        </fileset>
+                    </jar>
+                </sequential>
+            </antcontrib:for>
+            <mkstubs in="${out.final.jar}.tmp" conf="${mkstubs.conf}" out="${out.final.jar}" />
+        </do-only-if-not-library>
+    </target>
+
+    <!-- QZone开放接口SDK -->
+    <property name="mkstubs" value="${svn.info.entry.wc-info.wcroot-abspath}/build/lib/mkstubs.jar" />
+    <!-- mkstubs config file -->
+    <property name="mkstubs.conf" value="${svn.info.entry.wc-info.wcroot-abspath}/build/conf/mkstubs.conf" />
+
+    <!-- 腾讯自定义 -->
+    <!-- mkstubs -->
+    <macrodef name="mkstubs">
+        <attribute name="in" />
+        <attribute name="conf" />
+        <attribute name="out" />
+        <sequential>
+            <java jar="${mkstubs}" fork="true">
+                <arg value="@{in}" />
+                <arg value="@{out}" />
+                <arg value="@{conf}" prefix="@" />
+            </java>
+        </sequential>
+    </macrodef>
+
 
     <!-- ******************************************************* -->
     <!-- ************ Instrumented specific targets ************ -->
